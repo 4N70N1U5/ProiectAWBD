@@ -37,6 +37,9 @@ spec:
         envFrom:
         - configMapRef:
             name: skybase-api-config
+        volumeMounts:
+        - name: shared-logs
+          mountPath: /app/logs
         resources:
           requests:
             memory: "512Mi"
@@ -44,6 +47,68 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
+      # Logging Sidecar Container
+      - name: log-collector
+        image: fluent/fluent-bit:latest
+        volumeMounts:
+        - name: shared-logs
+          mountPath: /app/logs
+          readOnly: true
+        - name: fluent-bit-config
+          mountPath: /fluent-bit/etc
+        ports:
+        - containerPort: 24224
+          name: forward
+        - containerPort: 2020
+          name: http
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      # Monitoring Sidecar Container  
+      - name: metrics-exporter
+        image: prom/node-exporter:latest
+        ports:
+        - containerPort: 9100
+          name: metrics
+        volumeMounts:
+        - name: proc
+          mountPath: /host/proc
+          readOnly: true
+        - name: sys
+          mountPath: /host/sys
+          readOnly: true
+        - name: shared-logs
+          mountPath: /app/logs
+          readOnly: true
+        command:
+        - /bin/node_exporter
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --collector.filesystem.ignored-mount-points
+        - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "25m"
+          limits:
+            memory: "64Mi"
+            cpu: "50m"
+      volumes:
+      - name: shared-logs
+        emptyDir: {}
+      - name: fluent-bit-config
+        configMap:
+          name: fluent-bit-config
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
 ---
 apiVersion: v1
 kind: Service
@@ -67,11 +132,96 @@ metadata:
   labels:
     app: skybase-api
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 8081
     targetPort: 8081
-    nodePort: 30888
     protocol: TCP
+  selector:
+    app: skybase-api
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+        HTTP_Server   On
+        HTTP_Listen   0.0.0.0
+        HTTP_Port     2020
+        
+    [INPUT]
+        Name              tail
+        Path              /app/logs/*.log
+        Parser            docker
+        Tag               skybase.logs.*
+        Refresh_Interval  5
+        
+    [OUTPUT]
+        Name  stdout
+        Match *
+        Format json_lines
+        
+    [OUTPUT]
+        Name  forward
+        Match *
+        Host  127.0.0.1
+        Port  24224
+        
+  parsers.conf: |
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
+        
+    [PARSER]
+        Name        spring-boot
+        Format      regex
+        Regex       ^(?<timestamp>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})\s+(?<level>\w+)\s+(?<pid>\d+)\s+---\s+\[(?<thread>.*?)\]\s+(?<logger>\S+)\s*:\s+(?<message>.*)$
+        Time_Key    timestamp
+        Time_Format %Y-%m-%d %H:%M:%S.%L
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skybase-metrics-service
+  labels:
+    app: skybase-api
+    component: metrics
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 9100
+    targetPort: 9100
+    protocol: TCP
+    name: metrics
+  - port: 2020
+    targetPort: 2020
+    protocol: TCP
+    name: logs-http
+  selector:
+    app: skybase-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skybase-logging-service
+  labels:
+    app: skybase-api
+    component: logging
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 24224
+    targetPort: 24224
+    protocol: TCP
+    name: forward
   selector:
     app: skybase-api
