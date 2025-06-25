@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: skybase-db-service
+  labels:
+    app: skybase-db
+spec:
+  ports:
+  - port: 3306
+    name: mysql
+  clusterIP: None
+  selector:
+    app: skybase-db
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: skybase-db
+spec:
+  serviceName: "skybase-db-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skybase-db
+  template:
+    metadata:
+      labels:
+        app: skybase-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:9
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root"
+        - name: MYSQL_DATABASE
+          value: "skybase"
+        - name: MYSQL_USER
+          value: "skybase"
+        - name: MYSQL_PASSWORD
+          value: "skybase"
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -h
+            - localhost
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - mysql
+            - -uskybase
+            - -pskybase
+            - -e
+            - "USE skybase"
+          initialDelaySeconds: 10
+          periodSeconds: 5
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-persistent-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skybase-db-external
+  labels:
+    app: skybase-db
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    targetPort: 3306
+    nodePort: 30306
+  selector:
+    app: skybase-db

@@ -2,7 +2,7 @@ name: skybase
 
 services:
     db:
-        image: mysql:latest
+        image: mysql:9
         container_name: skybase_db
         environment:
             MYSQL_ROOT_PASSWORD: root
@@ -20,16 +20,13 @@ services:
             retries: 10
             start_period: 30s
             start_interval: 5s
-    phpmyadmin:
-        image: phpmyadmin:latest
-        container_name: skybase_phpmyadmin
-        links:
-            - db
-        environment:
-            PMA_HOST: skybase_db
-            PMA_PORT: 3310
-            PMA_ARBITRARY: 1
+    api:
+        image: skybase:1.0.1
+        container_name: skybase_api
         ports:
-            - "8082:80"
+            - "8888:8081"
+        depends_on:
+            db:
+                condition: service_healthy
 volumes:
     dbdata:

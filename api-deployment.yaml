@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skybase-api
+  labels:
+    app: skybase-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skybase-api
+  template:
+    metadata:
+      labels:
+        app: skybase-api
+    spec:
+      containers:
+      - name: skybase-api
+        image: skybase:1.0.1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8081
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://skybase-db-service:3306/skybase"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "skybase"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "skybase"
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skybase-api-service
+  labels:
+    app: skybase-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8081
+    targetPort: 8081
+    protocol: TCP
+  selector:
+    app: skybase-api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skybase-api-external
+  labels:
+    app: skybase-api
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+    targetPort: 8081
+    nodePort: 30888
+    protocol: TCP
+  selector:
+    app: skybase-api
