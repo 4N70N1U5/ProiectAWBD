@@ -76,6 +76,7 @@ public class EmployeeMvcController {
             return "employees/details";
         } catch (NotFoundException e) {
             model.addAttribute("errorMessage", "Employee not found");
+            model.addAttribute("employees", employeeService.getAll());
             return "employees/list";
         }
     }

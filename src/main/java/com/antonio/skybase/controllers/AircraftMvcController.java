@@ -65,6 +65,7 @@ public class AircraftMvcController {
             return "aircraft/details";
         } catch (NotFoundException e) {
             model.addAttribute("errorMessage", "Aircraft not found");
+            model.addAttribute("aircraft", aircraftService.getAll());
             return "aircraft/list";
         }
     }

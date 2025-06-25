@@ -135,17 +135,12 @@
                                         <option value="">
                                             Select a city...
                                         </option>
-                                        <optgroup
-                                            th:each="countryGroup : ${#lists.groupBy(cities, 'country.name')}"
-                                            th:label="${countryGroup.key}"
-                                        >
-                                            <option
-                                                th:each="city : ${countryGroup.value}"
-                                                th:value="${city.id}"
-                                                th:text="${city.name} + ', ' + ${city.country.name}"
-                                                th:selected="${city.id == airportDTO.cityId}"
-                                            ></option>
-                                        </optgroup>
+                                        <option
+                                            th:each="city : ${cities}"
+                                            th:value="${city.id}"
+                                            th:text="${city.name} + ', ' + ${city.country.name}"
+                                            th:selected="${city.id == airportDTO.cityId}"
+                                        ></option>
                                     </select>
                                     <div
                                         th:if="${#fields.hasErrors('cityId')}"

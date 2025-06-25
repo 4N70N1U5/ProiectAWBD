@@ -27,20 +27,26 @@ public class CountryService {
     }
 
     public Country getById(Integer id) {
-        return countryRepository.findById(id).orElseThrow(() -> new NotFoundException("Country with ID " + id + " not found"));
+        return countryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Country with ID " + id + " not found"));
     }
 
     public Country update(Integer id, Country country) {
-        if (countryRepository.existsByCode(country.getCode()) && !countryRepository.findByCode(country.getCode()).getId().equals(id)) {
-            throw new BadRequestException("Country with code " + country.getCode() + " already exists");
+        Country existingCountry = countryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Country with ID " + id + " not found"));
+
+        // Check if the code is being changed and if another country with the same code
+        // exists
+        if (!existingCountry.getCode().equals(country.getCode())) {
+            if (countryRepository.existsByCode(country.getCode())) {
+                throw new BadRequestException("Country with code " + country.getCode() + " already exists");
+            }
         }
 
-        Country countryToUpdate = countryRepository.findById(id).orElseThrow(() -> new NotFoundException("Country with ID " + id + " not found"));
+        existingCountry.setName(country.getName());
+        existingCountry.setCode(country.getCode());
 
-        countryToUpdate.setName(country.getName());
-        countryToUpdate.setCode(country.getCode());
-
-        return countryRepository.save(countryToUpdate);
+        return countryRepository.save(existingCountry);
     }
 
     public void delete(Integer id) {

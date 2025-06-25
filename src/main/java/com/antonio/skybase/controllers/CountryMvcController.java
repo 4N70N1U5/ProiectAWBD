@@ -63,19 +63,20 @@ public class CountryMvcController {
             return "countries/details";
         } catch (NotFoundException e) {
             model.addAttribute("errorMessage", "Country not found");
+            model.addAttribute("countries", countryService.getAll());
             return "countries/list";
         }
     }
 
     // Show form to edit an existing country
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable("id") Integer id, Model model) {
+    public String showEditForm(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Country country = countryService.getById(id);
             model.addAttribute("country", country);
             return "countries/form";
         } catch (NotFoundException e) {
-            model.addAttribute("errorMessage", "Country not found");
+            redirectAttributes.addFlashAttribute("errorMessage", "Country not found");
             return "redirect:/web/countries";
         }
     }

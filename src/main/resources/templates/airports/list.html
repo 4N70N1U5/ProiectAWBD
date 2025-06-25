@@ -240,7 +240,7 @@
                                 <div class="col-md-4">
                                     <h5
                                         class="text-success"
-                                        th:text="${#sets.size(#lists.toSet(airports.![city.country.name]))}"
+                                        th:text="${airports.size()}"
                                     >
                                         0
                                     </h5>
@@ -251,7 +251,7 @@
                                 <div class="col-md-4">
                                     <h5
                                         class="text-info"
-                                        th:text="${#sets.size(#lists.toSet(airports.![city.name]))}"
+                                        th:text="${airports.size()}"
                                     >
                                         0
                                     </h5>

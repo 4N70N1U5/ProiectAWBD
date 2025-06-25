@@ -73,13 +73,15 @@ public class FlightMvcController {
             return "flights/details";
         } catch (NotFoundException e) {
             model.addAttribute("errorMessage", "Flight not found");
+            List<Flight> flights = flightService.getAll();
+            model.addAttribute("flights", flights);
             return "flights/list";
         }
     }
 
     // Show form to edit an existing flight
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable("id") Integer id, Model model) {
+    public String showEditForm(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Flight flight = flightService.getById(id);
 
@@ -96,7 +98,7 @@ public class FlightMvcController {
             model.addAttribute("airports", airportService.getAll());
             return "flights/form";
         } catch (NotFoundException e) {
-            model.addAttribute("errorMessage", "Flight not found");
+            redirectAttributes.addFlashAttribute("errorMessage", "Flight not found");
             return "redirect:/web/flights";
         }
     }

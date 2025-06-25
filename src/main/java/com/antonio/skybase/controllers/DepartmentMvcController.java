@@ -63,19 +63,21 @@ public class DepartmentMvcController {
             return "departments/details";
         } catch (NotFoundException e) {
             model.addAttribute("errorMessage", "Department not found");
+            List<Department> departments = departmentService.getAll();
+            model.addAttribute("departments", departments);
             return "departments/list";
         }
     }
 
     // Show form to edit an existing department
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable("id") Integer id, Model model) {
+    public String showEditForm(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Department department = departmentService.getById(id);
             model.addAttribute("department", department);
             return "departments/form";
         } catch (NotFoundException e) {
-            model.addAttribute("errorMessage", "Department not found");
+            redirectAttributes.addFlashAttribute("errorMessage", "Department not found");
             return "redirect:/web/departments";
         }
     }

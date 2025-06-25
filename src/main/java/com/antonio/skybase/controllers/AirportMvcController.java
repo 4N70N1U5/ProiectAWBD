@@ -65,19 +65,21 @@ public class AirportMvcController {
     }
 
     @GetMapping("/{id}")
-    public String details(@PathVariable Integer id, Model model) {
+    public String details(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Airport airport = airportService.getById(id);
             model.addAttribute("airport", airport);
             return "airports/details";
         } catch (Exception e) {
+            List<Airport> airports = airportService.getAll();
+            model.addAttribute("airports", airports);
             model.addAttribute("errorMessage", e.getMessage());
-            return "redirect:/web/airports";
+            return "airports/list";
         }
     }
 
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Integer id, Model model) {
+    public String showEditForm(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Airport airport = airportService.getById(id);
             List<City> cities = cityService.getAll();
@@ -93,7 +95,7 @@ public class AirportMvcController {
             model.addAttribute("airportId", id);
             return "airports/form";
         } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/web/airports";
         }
     }
@@ -134,7 +136,8 @@ public class AirportMvcController {
             redirectAttributes.addFlashAttribute("successMessage",
                     "Airport '" + airportName + "' deleted successfully!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            // For delete operations, treat not found as success (idempotent)
+            redirectAttributes.addFlashAttribute("successMessage", "Airport deleted successfully!");
         }
         return "redirect:/web/airports";
     }

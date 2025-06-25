@@ -73,13 +73,15 @@ public class JobMvcController {
             return "jobs/details";
         } catch (NotFoundException e) {
             model.addAttribute("errorMessage", "Job not found");
+            List<Job> jobs = jobService.getAll();
+            model.addAttribute("jobs", jobs);
             return "jobs/list";
         }
     }
 
     // Show form to edit an existing job
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable("id") Integer id, Model model) {
+    public String showEditForm(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Job job = jobService.getById(id);
 
@@ -91,10 +93,11 @@ public class JobMvcController {
             jobDTO.setDepartmentId(job.getDepartment().getId());
 
             model.addAttribute("jobDTO", jobDTO);
+            model.addAttribute("jobId", id);
             model.addAttribute("departments", departmentService.getAll());
             return "jobs/form";
         } catch (NotFoundException e) {
-            model.addAttribute("errorMessage", "Job not found");
+            redirectAttributes.addFlashAttribute("errorMessage", "Job not found");
             return "redirect:/web/jobs";
         }
     }
@@ -107,6 +110,7 @@ public class JobMvcController {
             Model model,
             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("jobId", id);
             model.addAttribute("departments", departmentService.getAll());
             return "jobs/form";
         }
@@ -115,6 +119,7 @@ public class JobMvcController {
             jobService.update(id, jobDTO);
             redirectAttributes.addFlashAttribute("successMessage", "Job updated successfully!");
         } catch (Exception e) {
+            model.addAttribute("jobId", id);
             model.addAttribute("departments", departmentService.getAll());
             model.addAttribute("errorMessage", "Error updating job: " + e.getMessage());
             return "jobs/form";

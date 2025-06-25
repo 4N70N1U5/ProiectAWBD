@@ -78,7 +78,8 @@ public class AircraftAssignmentMvcController {
     public String getAircraftAssignmentById(@PathVariable("aircraftId") Integer aircraftId,
             @PathVariable("flightId") Integer flightId,
             @PathVariable("date") String date,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         try {
             AircraftAssignmentId id = new AircraftAssignmentId();
             id.setAircraftId(aircraftId);
@@ -89,8 +90,8 @@ public class AircraftAssignmentMvcController {
             model.addAttribute("assignment", assignment);
             return "aircraft-assignments/details";
         } catch (NotFoundException e) {
-            model.addAttribute("errorMessage", "Aircraft assignment not found");
-            return "aircraft-assignments/list";
+            redirectAttributes.addFlashAttribute("errorMessage", "Aircraft assignment not found");
+            return "redirect:/web/aircraft-assignments";
         }
     }
 
@@ -99,7 +100,8 @@ public class AircraftAssignmentMvcController {
     public String showEditForm(@PathVariable("aircraftId") Integer aircraftId,
             @PathVariable("flightId") Integer flightId,
             @PathVariable("date") String date,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         try {
             AircraftAssignmentId id = new AircraftAssignmentId();
             id.setAircraftId(aircraftId);
@@ -119,7 +121,7 @@ public class AircraftAssignmentMvcController {
             model.addAttribute("flights", flightService.getAll());
             return "aircraft-assignments/form";
         } catch (NotFoundException e) {
-            model.addAttribute("errorMessage", "Aircraft assignment not found");
+            redirectAttributes.addFlashAttribute("errorMessage", "Aircraft assignment not found");
             return "redirect:/web/aircraft-assignments";
         }
     }

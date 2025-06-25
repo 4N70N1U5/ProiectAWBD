@@ -74,13 +74,15 @@ public class CityMvcController {
             return "cities/details";
         } catch (NotFoundException e) {
             model.addAttribute("errorMessage", "City not found");
-            return "redirect:/web/cities";
+            List<City> cities = cityService.getAll();
+            model.addAttribute("cities", cities);
+            return "cities/list";
         }
     }
 
     // Show form to edit an existing city
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable("id") Integer id, Model model) {
+    public String showEditForm(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             City city = cityService.getById(id);
             CityDTO cityDTO = new CityDTO();
@@ -93,7 +95,7 @@ public class CityMvcController {
             model.addAttribute("countries", countries);
             return "cities/form";
         } catch (NotFoundException e) {
-            model.addAttribute("errorMessage", "City not found");
+            redirectAttributes.addFlashAttribute("errorMessage", "City not found");
             return "redirect:/web/cities";
         }
     }
