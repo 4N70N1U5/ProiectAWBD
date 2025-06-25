@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'airports')}"
+>
+    <head>
+        <title th:text="'Airport: ' + ${airport.name} + ' - SkyBase'">
+            Airport Details - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/airports" class="text-decoration-none"
+                            >Airports</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        th:text="${airport.name}"
+                    >
+                        Airport Name
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span th:text="${airport.name}">Airport Name</span>
+                        <span
+                            class="badge bg-primary ms-2"
+                            th:text="${airport.code}"
+                            >XXX</span
+                        >
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-buildings me-1"></i>
+                        <span th:text="${airport.city.name}">City Name</span>,
+                        <span th:text="${airport.city.country.name}"
+                            >Country Name</span
+                        >
+                    </p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a href="/web/airports" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Airports
+                    </a>
+                    <a
+                        th:href="@{/web/airports/{id}/edit(id=${airport.id})}"
+                        class="btn btn-warning"
+                    >
+                        <i class="bi bi-pencil me-2"></i>Edit
+                    </a>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+
+            <!-- Airport Details -->
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Airport
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">ID:</dt>
+                                        <dd
+                                            class="col-sm-8"
+                                            th:text="${airport.id}"
+                                        >
+                                            #
+                                        </dd>
+
+                                        <dt class="col-sm-4">Name:</dt>
+                                        <dd
+                                            class="col-sm-8"
+                                            th:text="${airport.name}"
+                                        >
+                                            Airport Name
+                                        </dd>
+
+                                        <dt class="col-sm-4">Code:</dt>
+                                        <dd class="col-sm-8">
+                                            <span
+                                                class="badge bg-primary"
+                                                th:text="${airport.code}"
+                                                >XXX</span
+                                            >
+                                        </dd>
+
+                                        <dt class="col-sm-4">City:</dt>
+                                        <dd class="col-sm-8">
+                                            <a
+                                                th:href="@{/web/cities/{id}(id=${airport.city.id})}"
+                                                class="text-decoration-none"
+                                            >
+                                                <span
+                                                    class="badge bg-info"
+                                                    th:text="${airport.city.name}"
+                                                    >City Name</span
+                                                >
+                                            </a>
+                                        </dd>
+
+                                        <dt class="col-sm-4">Country:</dt>
+                                        <dd class="col-sm-8">
+                                            <a
+                                                th:href="@{/web/countries/{id}(id=${airport.city.country.id})}"
+                                                class="text-decoration-none"
+                                            >
+                                                <span
+                                                    class="badge bg-secondary"
+                                                    th:text="${airport.city.country.name}"
+                                                    >Country Name</span
+                                                >
+                                            </a>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-center">
+                                        <i
+                                            class="bi bi-geo-alt text-primary"
+                                            style="font-size: 5rem"
+                                        ></i>
+                                        <p class="text-muted mt-2">
+                                            Airport Information
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Details Card -->
+                    <div class="card mt-3">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-geo me-2"></i>Location Details
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>Full Location:</strong><br />
+                                        <span th:text="${airport.name}"
+                                            >Airport Name</span
+                                        ><br />
+                                        <span th:text="${airport.city.name}"
+                                            >City Name</span
+                                        >,
+                                        <span
+                                            th:text="${airport.city.country.name}"
+                                            >Country Name</span
+                                        >
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-2">
+                                        <strong>IATA Code:</strong>
+                                        <span
+                                            class="badge bg-primary"
+                                            th:text="${airport.code}"
+                                            >XXX</span
+                                        >
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <!-- Related Information -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-link-45deg me-2"></i>Related
+                                Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group list-group-flush">
+                                <a
+                                    th:href="@{/web/flights?airportId={id}(id=${airport.id})}"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                >
+                                    <span
+                                        ><i class="bi bi-airplane me-2"></i
+                                        >Flights from this airport</span
+                                    >
+                                    <span class="badge bg-secondary">0</span>
+                                </a>
+                                <a
+                                    th:href="@{/web/cities/{id}(id=${airport.city.id})}"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i class="bi bi-buildings me-2"></i>View
+                                    city details
+                                </a>
+                                <a
+                                    th:href="@{/web/countries/{id}(id=${airport.city.country.id})}"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i class="bi bi-globe me-2"></i>View country
+                                    details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card mt-3">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/flights/new?originAirportId={id}(id=${airport.id})}"
+                                    class="btn btn-outline-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i
+                                    >Schedule Flight
+                                </a>
+                                <a
+                                    th:href="@{/web/aircraft/new}"
+                                    class="btn btn-outline-success btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>Add
+                                    Aircraft
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Airport Statistics -->
+                    <div class="card mt-3">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-bar-chart me-2"></i>Statistics
+                            </h6>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="row">
+                                <div class="col-12 mb-2">
+                                    <h4 class="text-primary mb-1">0</h4>
+                                    <small class="text-muted"
+                                        >Scheduled Flights</small
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div
+                class="modal fade"
+                id="deleteModal"
+                tabindex="-1"
+                aria-labelledby="deleteModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">
+                                Confirm Delete
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete the airport
+                                <strong th:text="${airport.name}"
+                                    >Airport Name</strong
+                                >?
+                            </p>
+                            <p class="text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                This action cannot be undone and may affect
+                                related flights and schedules.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/airports/{id}/delete(id=${airport.id})}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Airport
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

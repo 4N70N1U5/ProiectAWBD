@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'employees')}"
+>
+    <head>
+        <title
+            th:text="${employeeDTO.id != null ? 'Edit Employee' : 'New Employee'} + ' - SkyBase'"
+        >
+            Employee Form - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/employees" class="text-decoration-none"
+                            >Employees</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        th:text="${employeeDTO.id != null ? 'Edit Employee' : 'New Employee'}"
+                    >
+                        New Employee
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1
+                        class="h3 mb-0"
+                        th:text="${employeeDTO.id != null ? 'Edit Employee' : 'Add New Employee'}"
+                    >
+                        Add New Employee
+                    </h1>
+                    <p
+                        class="text-muted mb-0"
+                        th:text="${employeeDTO.id != null ? 'Update employee information' : 'Enter employee details'}"
+                    >
+                        Enter employee details
+                    </p>
+                </div>
+                <a href="/web/employees" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Employees
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            <div
+                th:if="${errorMessage}"
+                class="alert alert-danger alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${errorMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+
+            <!-- Employee Form -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-person me-2"></i>Employee
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form
+                                th:action="${employeeDTO.id != null ? '/web/employees/' + employeeDTO.id : '/web/employees'}"
+                                th:object="${employeeDTO}"
+                                method="post"
+                            >
+                                <!-- Personal Information -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="firstName"
+                                                class="form-label"
+                                            >
+                                                <i class="bi bi-person me-1"></i
+                                                >First Name *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('firstName')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="firstName"
+                                                th:field="*{firstName}"
+                                                placeholder="Enter first name"
+                                            />
+                                            <div
+                                                th:if="${#fields.hasErrors('firstName')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{firstName}"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="lastName"
+                                                class="form-label"
+                                            >
+                                                <i class="bi bi-person me-1"></i
+                                                >Last Name *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('lastName')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="lastName"
+                                                th:field="*{lastName}"
+                                                placeholder="Enter last name"
+                                            />
+                                            <div
+                                                th:if="${#fields.hasErrors('lastName')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{lastName}"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="email"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-envelope me-1"
+                                                ></i
+                                                >Email *
+                                            </label>
+                                            <input
+                                                type="email"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('email')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="email"
+                                                th:field="*{email}"
+                                                placeholder="Enter email address"
+                                            />
+                                            <div
+                                                th:if="${#fields.hasErrors('email')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{email}"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="phoneNumber"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-telephone me-1"
+                                                ></i
+                                                >Phone Number *
+                                            </label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('phoneNumber')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="phoneNumber"
+                                                th:field="*{phoneNumber}"
+                                                placeholder="Enter phone number"
+                                            />
+                                            <div
+                                                th:if="${#fields.hasErrors('phoneNumber')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{phoneNumber}"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Job Information -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="jobId"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-briefcase me-1"
+                                                ></i
+                                                >Job Position *
+                                            </label>
+                                            <select
+                                                class="form-select"
+                                                th:class="${#fields.hasErrors('jobId')} ? 'form-select is-invalid' : 'form-select'"
+                                                id="jobId"
+                                                th:field="*{jobId}"
+                                            >
+                                                <option value="">
+                                                    Select a job position
+                                                </option>
+                                                <option
+                                                    th:each="job : ${jobs}"
+                                                    th:value="${job.id}"
+                                                    th:text="${job.title + ' (' + job.department.name + ')'}"
+                                                >
+                                                    Job Title (Department)
+                                                </option>
+                                            </select>
+                                            <div
+                                                th:if="${#fields.hasErrors('jobId')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{jobId}"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="salary"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-currency-dollar me-1"
+                                                ></i
+                                                >Salary *
+                                            </label>
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('salary')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="salary"
+                                                th:field="*{salary}"
+                                                placeholder="Enter salary"
+                                                min="0"
+                                            />
+                                            <div
+                                                th:if="${#fields.hasErrors('salary')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{salary}"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Information -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="managerId"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-person-badge me-1"
+                                                ></i
+                                                >Manager
+                                            </label>
+                                            <select
+                                                class="form-select"
+                                                th:class="${#fields.hasErrors('managerId')} ? 'form-select is-invalid' : 'form-select'"
+                                                id="managerId"
+                                                th:field="*{managerId}"
+                                            >
+                                                <option value="">
+                                                    Select a manager (optional)
+                                                </option>
+                                                <option
+                                                    th:each="manager : ${employees}"
+                                                    th:if="${manager.id != employeeDTO.id}"
+                                                    th:value="${manager.id}"
+                                                    th:text="${manager.firstName + ' ' + manager.lastName + ' (' + manager.job.title + ')'}"
+                                                >
+                                                    Manager Name (Job)
+                                                </option>
+                                            </select>
+                                            <div
+                                                th:if="${#fields.hasErrors('managerId')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{managerId}"
+                                            ></div>
+                                            <div class="form-text">
+                                                Select a manager for this
+                                                employee (optional)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-4">
+                                            <label
+                                                for="flightHours"
+                                                class="form-label"
+                                            >
+                                                <i class="bi bi-clock me-1"></i
+                                                >Flight Hours
+                                            </label>
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('flightHours')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="flightHours"
+                                                th:field="*{flightHours}"
+                                                placeholder="Enter flight hours"
+                                                min="0"
+                                            />
+                                            <div
+                                                th:if="${#fields.hasErrors('flightHours')}"
+                                                class="invalid-feedback"
+                                                th:errors="*{flightHours}"
+                                            ></div>
+                                            <div class="form-text">
+                                                Total flight hours (for pilots
+                                                and crew)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="d-flex justify-content-between">
+                                    <a
+                                        href="/web/employees"
+                                        class="btn btn-outline-secondary"
+                                    >
+                                        <i class="bi bi-x-circle me-2"></i
+                                        >Cancel
+                                    </a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        <span
+                                            th:text="${employeeDTO.id != null ? 'Update Employee' : 'Create Employee'}"
+                                            >Create Employee</span
+                                        >
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Help Card -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-light">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Tips
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0 small text-muted">
+                                <li>All fields marked with * are required</li>
+                                <li>Email address must be unique and valid</li>
+                                <li>
+                                    Select appropriate job position and manager
+                                </li>
+                                <li>
+                                    Flight hours are optional and mainly for
+                                    pilots and crew
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .form-label {
+                    font-weight: 500;
+                }
+                .is-invalid {
+                    border-color: #dc3545;
+                }
+                .invalid-feedback {
+                    display: block;
+                }
+            </style>
+        </div>
+    </body>
+</html>

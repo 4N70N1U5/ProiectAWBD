@@ -22,11 +22,13 @@ public class DepartmentService {
     }
 
     public Department getById(Integer id) {
-        return departmentRepository.findById(id).orElseThrow(() -> new NotFoundException("Department with ID " + id + " not found"));
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Department with ID " + id + " not found"));
     }
 
     public Department update(Integer id, Department department) {
-        Department departmentToUpdate = departmentRepository.findById(id).orElseThrow(() -> new NotFoundException("Department with ID " + id + " not found"));
+        Department departmentToUpdate = departmentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Department with ID " + id + " not found"));
         departmentToUpdate.setName(department.getName());
         return departmentRepository.save(departmentToUpdate);
     }

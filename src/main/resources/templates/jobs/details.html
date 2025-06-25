@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'jobs')}"
+>
+    <head>
+        <title th:text="'Job: ' + ${job.title} + ' - SkyBase'">
+            Job Details - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/jobs" class="text-decoration-none"
+                            >Jobs</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item active" th:text="${job.title}">
+                        Job Details
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-briefcase me-2"></i
+                        ><span th:text="${job.title}">Job Title</span>
+                    </h1>
+                    <p class="text-muted mb-0">Job details and information</p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a
+                        th:href="@{/web/jobs/{id}/edit(id=${job.id})}"
+                        class="btn btn-warning"
+                    >
+                        <i class="bi bi-pencil me-2"></i>Edit Job
+                    </a>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i class="bi bi-trash me-2"></i>Delete Job
+                    </button>
+                    <a href="/web/jobs" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Jobs
+                    </a>
+                </div>
+            </div>
+
+            <!-- Job Details -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Job
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Job ID</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${job.id}"
+                                        >
+                                            #1
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Job Title</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${job.title}"
+                                        >
+                                            Software Engineer
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Department</label
+                                        >
+                                        <div>
+                                            <span
+                                                class="badge bg-secondary fs-6"
+                                                th:text="${job.department.name}"
+                                                >IT Department</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Salary Range</label
+                                        >
+                                        <div class="fw-bold text-success">
+                                            <i
+                                                class="bi bi-currency-dollar me-1"
+                                            ></i>
+                                            <span
+                                                th:text="${#numbers.formatDecimal(job.minSalary, 1, 0)}"
+                                                >50,000</span
+                                            >
+                                            <span> - </span>
+                                            <span
+                                                th:text="'$' + ${#numbers.formatDecimal(job.maxSalary, 1, 0)}"
+                                                >$80,000</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Salary Analysis -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-bar-chart me-2"></i>Salary
+                                Analysis
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <div class="p-3">
+                                        <h4
+                                            class="text-success mb-1"
+                                            th:text="'$' + ${#numbers.formatDecimal(job.minSalary, 1, 0)}"
+                                        >
+                                            $50,000
+                                        </h4>
+                                        <small class="text-muted"
+                                            >Minimum Salary</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3">
+                                        <h4
+                                            class="text-primary mb-1"
+                                            th:text="'$' + ${#numbers.formatDecimal(job.maxSalary, 1, 0)}"
+                                        >
+                                            $80,000
+                                        </h4>
+                                        <small class="text-muted"
+                                            >Maximum Salary</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3">
+                                        <h4
+                                            class="text-info mb-1"
+                                            th:text="'$' + ${#numbers.formatDecimal((job.minSalary + job.maxSalary) / 2, 1, 0)}"
+                                        >
+                                            $65,000
+                                        </h4>
+                                        <small class="text-muted"
+                                            >Average Salary</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="p-3">
+                                        <h4
+                                            class="text-warning mb-1"
+                                            th:text="'$' + ${#numbers.formatDecimal(job.maxSalary - job.minSalary, 1, 0)}"
+                                        >
+                                            $30,000
+                                        </h4>
+                                        <small class="text-muted"
+                                            >Salary Range</small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/jobs/{id}/edit(id=${job.id})}"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    <i class="bi bi-pencil me-2"></i>Edit Job
+                                </a>
+                                <a
+                                    href="/web/jobs/new"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>Add
+                                    New Job
+                                </a>
+                                <a
+                                    href="/web/jobs"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All Jobs
+                                </a>
+                                <hr />
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                >
+                                    <i class="bi bi-trash me-2"></i>Delete Job
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Department Info -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-diagram-3 me-2"></i>Department
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <i
+                                    class="bi bi-diagram-3 text-secondary"
+                                    style="font-size: 2rem"
+                                ></i>
+                                <h6
+                                    class="mt-2 mb-1"
+                                    th:text="${job.department.name}"
+                                >
+                                    IT Department
+                                </h6>
+                                <p class="text-muted small mb-2">
+                                    Department ID:
+                                    <span th:text="${job.department.id}"
+                                        >1</span
+                                    >
+                                </p>
+                                <a
+                                    th:href="@{/web/departments/{id}(id=${job.department.id})}"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-eye me-1"></i>View
+                                    Department
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i
+                                    class="bi bi-exclamation-triangle text-warning me-2"
+                                ></i
+                                >Confirm Deletion
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete the job "<strong
+                                    th:text="${job.title}"
+                                    >Job Title</strong
+                                >"?
+                            </p>
+                            <p class="text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                This action cannot be undone and may affect
+                                related employee assignments.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/jobs/{id}/delete(id=${job.id})}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete Job
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'airports')}"
+>
+    <head>
+        <title>Airports - SkyBase</title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item active">Airports</li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-geo-alt me-2"></i>Airports
+                    </h1>
+                    <p class="text-muted mb-0">Manage airports and terminals</p>
+                </div>
+                <a href="/web/airports/new" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Airport
+                </a>
+            </div>
+
+            <!-- Airports Table -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-list me-2"></i>All Airports
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${airports.empty}" class="text-center py-5">
+                        <i
+                            class="bi bi-geo-alt-fill text-muted"
+                            style="font-size: 3rem"
+                        ></i>
+                        <p class="text-muted mt-3 mb-4">No airports found</p>
+                        <a href="/web/airports/new" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Add First
+                            Airport
+                        </a>
+                    </div>
+
+                    <div th:unless="${airports.empty}" class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">City</th>
+                                    <th scope="col">Country</th>
+                                    <th scope="col" class="text-center">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="airport : ${airports}">
+                                    <td class="align-middle">
+                                        <span
+                                            class="badge bg-light text-dark"
+                                            th:text="${airport.id}"
+                                            >1</span
+                                        >
+                                    </td>
+                                    <td class="align-middle">
+                                        <a
+                                            th:href="@{/web/airports/{id}(id=${airport.id})}"
+                                            class="text-decoration-none fw-medium"
+                                            th:text="${airport.name}"
+                                            >Airport Name</a
+                                        >
+                                    </td>
+                                    <td class="align-middle">
+                                        <span
+                                            class="badge bg-primary"
+                                            th:text="${airport.code}"
+                                            >XXX</span
+                                        >
+                                    </td>
+                                    <td class="align-middle">
+                                        <a
+                                            th:href="@{/web/cities/{id}(id=${airport.city.id})}"
+                                            class="text-decoration-none"
+                                        >
+                                            <span
+                                                class="badge bg-info"
+                                                th:text="${airport.city.name}"
+                                                >City Name</span
+                                            >
+                                        </a>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a
+                                            th:href="@{/web/countries/{id}(id=${airport.city.country.id})}"
+                                            class="text-decoration-none"
+                                        >
+                                            <span
+                                                class="badge bg-secondary"
+                                                th:text="${airport.city.country.name}"
+                                                >Country Name</span
+                                            >
+                                        </a>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <div class="btn-group" role="group">
+                                            <a
+                                                th:href="@{/web/airports/{id}(id=${airport.id})}"
+                                                class="btn btn-outline-primary btn-sm"
+                                                title="View Details"
+                                            >
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a
+                                                th:href="@{/web/airports/{id}/edit(id=${airport.id})}"
+                                                class="btn btn-outline-warning btn-sm"
+                                                title="Edit Airport"
+                                            >
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-danger btn-sm"
+                                                data-bs-toggle="modal"
+                                                th:data-bs-target="'#deleteModal' + ${airport.id}"
+                                                title="Delete Airport"
+                                            >
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Delete Confirmation Modal -->
+                                        <div
+                                            class="modal fade"
+                                            th:id="'deleteModal' + ${airport.id}"
+                                            tabindex="-1"
+                                            aria-hidden="true"
+                                        >
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            Confirm Delete
+                                                        </h5>
+                                                        <button
+                                                            type="button"
+                                                            class="btn-close"
+                                                            data-bs-dismiss="modal"
+                                                        ></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            Are you sure you
+                                                            want to delete the
+                                                            airport
+                                                            <strong
+                                                                th:text="${airport.name}"
+                                                                >Airport
+                                                                Name</strong
+                                                            >?
+                                                        </p>
+                                                        <p class="text-danger">
+                                                            <i
+                                                                class="bi bi-exclamation-triangle"
+                                                            ></i>
+                                                            This action cannot
+                                                            be undone and may
+                                                            affect related
+                                                            flights.
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-secondary"
+                                                            data-bs-dismiss="modal"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <form
+                                                            th:action="@{/web/airports/{id}/delete(id=${airport.id})}"
+                                                            method="post"
+                                                            style="
+                                                                display: inline;
+                                                            "
+                                                        >
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-danger"
+                                                            >
+                                                                <i
+                                                                    class="bi bi-trash me-2"
+                                                                ></i
+                                                                >Delete Airport
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-4">
+                                    <h5
+                                        class="text-primary"
+                                        th:text="${airports.size()}"
+                                    >
+                                        0
+                                    </h5>
+                                    <small class="text-muted"
+                                        >Total Airports</small
+                                    >
+                                </div>
+                                <div class="col-md-4">
+                                    <h5
+                                        class="text-success"
+                                        th:text="${#sets.size(#lists.toSet(airports.![city.country.name]))}"
+                                    >
+                                        0
+                                    </h5>
+                                    <small class="text-muted"
+                                        >Countries Served</small
+                                    >
+                                </div>
+                                <div class="col-md-4">
+                                    <h5
+                                        class="text-info"
+                                        th:text="${#sets.size(#lists.toSet(airports.![city.name]))}"
+                                    >
+                                        0
+                                    </h5>
+                                    <small class="text-muted"
+                                        >Cities Served</small
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

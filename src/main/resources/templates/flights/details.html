@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'flights')}"
+>
+    <head>
+        <title th:text="'Flight: ' + ${flight.number} + ' - SkyBase'">
+            Flight Details - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/flights" class="text-decoration-none"
+                            >Flights</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        th:text="${flight.number}"
+                    >
+                        Flight Details
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-calendar-event me-2"></i
+                        ><span th:text="${flight.number}">Flight Number</span>
+                    </h1>
+                    <p class="text-muted mb-0">
+                        <span th:text="${flight.departureAirport.city.name}"
+                            >Departure City</span
+                        >
+                        <i class="bi bi-arrow-right mx-2"></i>
+                        <span th:text="${flight.arrivalAirport.city.name}"
+                            >Arrival City</span
+                        >
+                    </p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a
+                        th:href="@{/web/flights/{id}/edit(id=${flight.id})}"
+                        class="btn btn-warning"
+                    >
+                        <i class="bi bi-pencil me-2"></i>Edit Flight
+                    </a>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i class="bi bi-trash me-2"></i>Delete Flight
+                    </button>
+                    <a href="/web/flights" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Flights
+                    </a>
+                </div>
+            </div>
+
+            <!-- Flight Details -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Basic Information -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Flight
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Flight ID</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${flight.id}"
+                                        >
+                                            #1
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Flight Number</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${flight.number}"
+                                        >
+                                            SK123
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Distance</label
+                                        >
+                                        <div class="fw-bold text-info">
+                                            <i class="bi bi-geo-alt me-1"></i>
+                                            <span
+                                                th:text="${#numbers.formatDecimal(flight.distance, 1, 0)} + ' km'"
+                                                >4,000 km</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Flight Duration</label
+                                        >
+                                        <div class="fw-bold text-success">
+                                            <i class="bi bi-clock me-1"></i>
+                                            <span
+                                                th:text="${#temporals.format(flight.departureTime, 'HH:mm')} + ' - ' + ${#temporals.format(flight.arrivalTime, 'HH:mm')}"
+                                                >08:30 - 17:45</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Information -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-arrow-left-right me-2"></i>Route
+                                Details
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 h-100">
+                                        <h6 class="text-primary mb-3">
+                                            <i
+                                                class="bi bi-airplane-engines me-2"
+                                            ></i
+                                            >Departure
+                                        </h6>
+                                        <div class="mb-2">
+                                            <strong
+                                                class="text-primary"
+                                                th:text="${flight.departureAirport.code}"
+                                                >LAX</strong
+                                            >
+                                            <span
+                                                class="ms-2"
+                                                th:text="${flight.departureAirport.name}"
+                                                >Los Angeles International</span
+                                            >
+                                        </div>
+                                        <div class="mb-2">
+                                            <i
+                                                class="bi bi-geo-alt text-muted me-1"
+                                            ></i>
+                                            <span
+                                                th:text="${flight.departureAirport.city.name + ', ' + flight.departureAirport.city.country.name}"
+                                                >Los Angeles, USA</span
+                                            >
+                                        </div>
+                                        <div class="mb-0">
+                                            <i
+                                                class="bi bi-clock text-muted me-1"
+                                            ></i>
+                                            <strong
+                                                th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"
+                                                >08:30</strong
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border rounded p-3 h-100">
+                                        <h6 class="text-success mb-3">
+                                            <i
+                                                class="bi bi-airplane-engines me-2"
+                                            ></i
+                                            >Arrival
+                                        </h6>
+                                        <div class="mb-2">
+                                            <strong
+                                                class="text-success"
+                                                th:text="${flight.arrivalAirport.code}"
+                                                >JFK</strong
+                                            >
+                                            <span
+                                                class="ms-2"
+                                                th:text="${flight.arrivalAirport.name}"
+                                                >John F. Kennedy
+                                                International</span
+                                            >
+                                        </div>
+                                        <div class="mb-2">
+                                            <i
+                                                class="bi bi-geo-alt text-muted me-1"
+                                            ></i>
+                                            <span
+                                                th:text="${flight.arrivalAirport.city.name + ', ' + flight.arrivalAirport.city.country.name}"
+                                                >New York, USA</span
+                                            >
+                                        </div>
+                                        <div class="mb-0">
+                                            <i
+                                                class="bi bi-clock text-muted me-1"
+                                            ></i>
+                                            <strong
+                                                th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"
+                                                >17:45</strong
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flight Route Visual -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-map me-2"></i>Flight Route
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div
+                                class="d-flex align-items-center justify-content-between"
+                            >
+                                <div class="text-center">
+                                    <div
+                                        class="p-3 bg-primary text-white rounded-circle d-inline-block mb-2"
+                                    >
+                                        <i
+                                            class="bi bi-airplane-engines"
+                                            style="font-size: 1.5rem"
+                                        ></i>
+                                    </div>
+                                    <div>
+                                        <strong
+                                            th:text="${flight.departureAirport.code}"
+                                            >LAX</strong
+                                        >
+                                        <div
+                                            class="small text-muted"
+                                            th:text="${flight.departureAirport.city.name}"
+                                        >
+                                            Los Angeles
+                                        </div>
+                                        <div
+                                            class="small text-primary fw-bold"
+                                            th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"
+                                        >
+                                            08:30
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex-grow-1 mx-4">
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="border-top border-2 border-primary flex-grow-1"
+                                        ></div>
+                                        <div class="mx-3 text-center">
+                                            <i
+                                                class="bi bi-airplane text-primary"
+                                                style="font-size: 1.5rem"
+                                            ></i>
+                                            <div
+                                                class="small text-muted mt-1"
+                                                th:text="${#numbers.formatDecimal(flight.distance, 1, 0)} + ' km'"
+                                            >
+                                                4,000 km
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="border-top border-2 border-success flex-grow-1"
+                                        ></div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div
+                                        class="p-3 bg-success text-white rounded-circle d-inline-block mb-2"
+                                    >
+                                        <i
+                                            class="bi bi-airplane-engines"
+                                            style="font-size: 1.5rem"
+                                        ></i>
+                                    </div>
+                                    <div>
+                                        <strong
+                                            th:text="${flight.arrivalAirport.code}"
+                                            >JFK</strong
+                                        >
+                                        <div
+                                            class="small text-muted"
+                                            th:text="${flight.arrivalAirport.city.name}"
+                                        >
+                                            New York
+                                        </div>
+                                        <div
+                                            class="small text-success fw-bold"
+                                            th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"
+                                        >
+                                            17:45
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/flights/{id}/edit(id=${flight.id})}"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    <i class="bi bi-pencil me-2"></i>Edit Flight
+                                </a>
+                                <a
+                                    href="/web/flights/new"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>Add
+                                    New Flight
+                                </a>
+                                <a
+                                    href="/web/flights"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All
+                                    Flights
+                                </a>
+                                <hr />
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                >
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Flight
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Airport Information -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-buildings me-2"></i>Airports
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div
+                                    class="d-flex justify-content-between align-items-center mb-2"
+                                >
+                                    <strong>Departure</strong>
+                                    <a
+                                        th:href="@{/web/airports/{id}(id=${flight.departureAirport.id})}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        <i class="bi bi-eye me-1"></i>View
+                                    </a>
+                                </div>
+                                <div class="small">
+                                    <div
+                                        class="fw-bold"
+                                        th:text="${flight.departureAirport.code + ' - ' + flight.departureAirport.name}"
+                                    >
+                                        LAX - Los Angeles International
+                                    </div>
+                                    <div
+                                        class="text-muted"
+                                        th:text="${flight.departureAirport.city.name + ', ' + flight.departureAirport.city.country.name}"
+                                    >
+                                        Los Angeles, USA
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-3" />
+
+                            <div>
+                                <div
+                                    class="d-flex justify-content-between align-items-center mb-2"
+                                >
+                                    <strong>Arrival</strong>
+                                    <a
+                                        th:href="@{/web/airports/{id}(id=${flight.arrivalAirport.id})}"
+                                        class="btn btn-outline-success btn-sm"
+                                    >
+                                        <i class="bi bi-eye me-1"></i>View
+                                    </a>
+                                </div>
+                                <div class="small">
+                                    <div
+                                        class="fw-bold"
+                                        th:text="${flight.arrivalAirport.code + ' - ' + flight.arrivalAirport.name}"
+                                    >
+                                        JFK - John F. Kennedy International
+                                    </div>
+                                    <div
+                                        class="text-muted"
+                                        th:text="${flight.arrivalAirport.city.name + ', ' + flight.arrivalAirport.city.country.name}"
+                                    >
+                                        New York, USA
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flight Summary -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Flight
+                                Summary
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <i
+                                    class="bi bi-calendar-event text-primary"
+                                    style="font-size: 2rem"
+                                ></i>
+                                <h6
+                                    class="mt-2 mb-1"
+                                    th:text="${flight.number}"
+                                >
+                                    Flight Number
+                                </h6>
+                                <p
+                                    class="text-muted small mb-2"
+                                    th:text="${flight.departureAirport.code + ' → ' + flight.arrivalAirport.code}"
+                                >
+                                    LAX → JFK
+                                </p>
+                                <span class="badge bg-primary"
+                                    >Active Route</span
+                                >
+                            </div>
+                            <hr />
+                            <div class="small">
+                                <div
+                                    class="d-flex justify-content-between mb-1"
+                                >
+                                    <span>Distance:</span>
+                                    <span
+                                        th:text="${#numbers.formatDecimal(flight.distance, 1, 0)} + ' km'"
+                                        >4,000 km</span
+                                    >
+                                </div>
+                                <div
+                                    class="d-flex justify-content-between mb-1"
+                                >
+                                    <span>Departure:</span>
+                                    <span
+                                        th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"
+                                        >08:30</span
+                                    >
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Arrival:</span>
+                                    <span
+                                        th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"
+                                        >17:45</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i
+                                    class="bi bi-exclamation-triangle text-warning me-2"
+                                ></i
+                                >Confirm Deletion
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete flight "<strong
+                                    th:text="${flight.number}"
+                                    >Flight Number</strong
+                                >"?
+                            </p>
+                            <div class="small text-muted mb-2">
+                                Route:
+                                <span
+                                    th:text="${flight.departureAirport.code + ' → ' + flight.arrivalAirport.code}"
+                                    >LAX → JFK</span
+                                >
+                            </div>
+                            <p class="text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                This action cannot be undone and may affect
+                                related schedules and assignments.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/flights/{id}/delete(id=${flight.id})}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Flight
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

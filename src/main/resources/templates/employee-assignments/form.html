@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'employee-assignments')}"
+>
+    <head>
+        <title
+            th:text="${originalId != null ? 'Edit Employee Assignment' : 'New Employee Assignment'} + ' - SkyBase'"
+        >
+            Employee Assignment - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a
+                            href="/web/employee-assignments"
+                            class="text-decoration-none"
+                            >Employee Assignments</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        aria-current="page"
+                        th:text="${originalId != null ? 'Edit' : 'New'}"
+                    ></li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-person-check-fill me-2"></i>
+                        <span
+                            th:text="${originalId != null ? 'Edit Employee Assignment' : 'New Employee Assignment'}"
+                        ></span>
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Assign crew members to flights
+                    </p>
+                </div>
+                <a
+                    href="/web/employee-assignments"
+                    class="btn btn-outline-secondary"
+                >
+                    <i class="bi bi-arrow-left me-2"></i>Back to Assignments
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            <div
+                th:if="${errorMessage}"
+                class="alert alert-danger alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                ></button>
+            </div>
+
+            <!-- Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Assignment
+                                Details
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form
+                                th:action="${originalId != null ? '/web/employee-assignments/' + originalId.employeeId + '/' + originalId.flightId + '/' + originalId.date : '/web/employee-assignments'}"
+                                th:object="${employeeAssignmentDTO}"
+                                method="post"
+                            >
+                                <!-- Employee Selection -->
+                                <div class="mb-3">
+                                    <label for="employeeId" class="form-label">
+                                        Employee
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select
+                                        class="form-select"
+                                        th:field="*{employeeId}"
+                                        id="employeeId"
+                                        th:class="${#fields.hasErrors('employeeId')} ? 'form-select is-invalid' : 'form-select'"
+                                    >
+                                        <option value="">
+                                            Select an employee...
+                                        </option>
+                                        <option
+                                            th:each="employee : ${employees}"
+                                            th:value="${employee.id}"
+                                            th:text="${employee.firstName + ' ' + employee.lastName + ' (' + employee.job.title + ')'}"
+                                        ></option>
+                                    </select>
+                                    <div
+                                        th:if="${#fields.hasErrors('employeeId')}"
+                                        class="invalid-feedback"
+                                    >
+                                        <span th:errors="*{employeeId}"></span>
+                                    </div>
+                                    <div class="form-text">
+                                        Only employees from Flight Crew and
+                                        Cabin Personnel departments can be
+                                        assigned to flights.
+                                    </div>
+                                </div>
+
+                                <!-- Flight Selection -->
+                                <div class="mb-3">
+                                    <label for="flightId" class="form-label">
+                                        Flight
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select
+                                        class="form-select"
+                                        th:field="*{flightId}"
+                                        id="flightId"
+                                        th:class="${#fields.hasErrors('flightId')} ? 'form-select is-invalid' : 'form-select'"
+                                    >
+                                        <option value="">
+                                            Select a flight...
+                                        </option>
+                                        <option
+                                            th:each="flight : ${flights}"
+                                            th:value="${flight.id}"
+                                            th:text="${flight.number + ' - ' + flight.departureAirport.name + ' → ' + flight.arrivalAirport.name}"
+                                        ></option>
+                                    </select>
+                                    <div
+                                        th:if="${#fields.hasErrors('flightId')}"
+                                        class="invalid-feedback"
+                                    >
+                                        <span th:errors="*{flightId}"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Date -->
+                                <div class="mb-3">
+                                    <label for="date" class="form-label">
+                                        Assignment Date
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        th:field="*{date}"
+                                        id="date"
+                                        th:class="${#fields.hasErrors('date')} ? 'form-control is-invalid' : 'form-control'"
+                                    />
+                                    <div
+                                        th:if="${#fields.hasErrors('date')}"
+                                        class="invalid-feedback"
+                                    >
+                                        <span th:errors="*{date}"></span>
+                                    </div>
+                                    <div class="form-text">
+                                        The employee must be available on this
+                                        date.
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="d-flex justify-content-between">
+                                    <a
+                                        href="/web/employee-assignments"
+                                        class="btn btn-secondary"
+                                    >
+                                        <i class="bi bi-x-circle me-2"></i
+                                        >Cancel
+                                    </a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        <span
+                                            th:text="${originalId != null ? 'Update Assignment' : 'Create Assignment'}"
+                                        ></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Panel -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Assignment
+                                Rules
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <i
+                                        class="bi bi-check-circle text-success me-2"
+                                    ></i>
+                                    Only employees from Flight Crew and Cabin
+                                    Personnel departments can be assigned
+                                </li>
+                                <li class="mb-2">
+                                    <i
+                                        class="bi bi-check-circle text-success me-2"
+                                    ></i>
+                                    Employees cannot be assigned to multiple
+                                    flights on the same date
+                                </li>
+                                <li class="mb-2">
+                                    <i
+                                        class="bi bi-check-circle text-success me-2"
+                                    ></i>
+                                    Assignment date must be specified
+                                </li>
+                                <li>
+                                    <i
+                                        class="bi bi-info-circle text-primary me-2"
+                                    ></i>
+                                    Each assignment represents one employee
+                                    working on one flight on a specific date
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    href="/web/employee-assignments"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All
+                                    Assignments
+                                </a>
+                                <a
+                                    href="/web/employees"
+                                    class="btn btn-outline-info btn-sm"
+                                >
+                                    <i class="bi bi-people me-2"></i>Manage
+                                    Employees
+                                </a>
+                                <a
+                                    href="/web/flights"
+                                    class="btn btn-outline-primary btn-sm"
+                                >
+                                    <i class="bi bi-airplane me-2"></i>Manage
+                                    Flights
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

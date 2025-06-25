@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'countries')}"
+>
+    <head>
+        <title>Countries - SkyBase</title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item active">Countries</li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-globe me-2"></i>Countries
+                    </h1>
+                    <p class="text-muted mb-0">Manage countries and regions</p>
+                </div>
+                <a href="/web/countries/new" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Country
+                </a>
+            </div>
+
+            <!-- Countries Table -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-list me-2"></i>All Countries
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${countries.empty}" class="text-center py-5">
+                        <i
+                            class="bi bi-globe-americas text-muted"
+                            style="font-size: 3rem"
+                        ></i>
+                        <p class="text-muted mt-3 mb-4">No countries found</p>
+                        <a href="/web/countries/new" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Add First
+                            Country
+                        </a>
+                    </div>
+
+                    <div th:if="${!countries.empty}">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col" class="text-end">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="country : ${countries}">
+                                    <td>
+                                        <span
+                                            class="badge bg-light text-dark"
+                                            th:text="${country.id}"
+                                        ></span>
+                                    </td>
+                                    <td>
+                                        <strong
+                                            th:text="${country.name}"
+                                        ></strong>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge bg-secondary text-white"
+                                            th:text="${country.code}"
+                                        ></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a
+                                                th:href="@{/web/countries/{id}(id=${country.id})}"
+                                                class="btn btn-sm btn-outline-primary"
+                                                title="View Details"
+                                            >
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a
+                                                th:href="@{/web/countries/{id}/edit(id=${country.id})}"
+                                                class="btn btn-sm btn-outline-secondary"
+                                                title="Edit"
+                                            >
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Delete"
+                                                data-bs-toggle="modal"
+                                                th:data-bs-target="'#deleteModal' + ${country.id}"
+                                            >
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5
+                                class="card-title text-primary"
+                                th:text="${countries.size()}"
+                            >
+                                0
+                            </h5>
+                            <p class="card-text text-muted">Total Countries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modals -->
+            <div
+                th:each="country : ${countries}"
+                th:id="'deleteModal' + ${country.id}"
+                class="modal fade"
+                tabindex="-1"
+            >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i
+                                    class="bi bi-exclamation-triangle text-warning me-2"
+                                ></i>
+                                Confirm Deletion
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete the country
+                                <strong th:text="${country.name}"></strong>?
+                            </p>
+                            <p class="text-muted small">
+                                This action cannot be undone and may affect
+                                related cities.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/countries/{id}/delete(id=${country.id})}"
+                                method="post"
+                                class="d-inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

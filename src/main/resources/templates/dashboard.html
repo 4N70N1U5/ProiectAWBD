@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'dashboard')}"
+>
+    <head>
+        <title>Dashboard - SkyBase</title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Page Header -->
+            <div class="mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </h1>
+                <p class="text-muted mb-0">
+                    Welcome to SkyBase Airline Management System
+                </p>
+            </div>
+
+            <!-- Flash Messages -->
+            <div
+                th:if="${successMessage}"
+                class="alert alert-success alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-check-circle"></i>
+                <span th:text="${successMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+
+            <div
+                th:if="${errorMessage}"
+                class="alert alert-danger alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${errorMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+
+            <!-- Quick Actions Cards -->
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-globe text-primary"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Countries</h5>
+                            <p class="card-text">
+                                Manage countries and regions
+                            </p>
+                            <a href="/web/countries" class="btn btn-primary">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-buildings text-success"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Cities</h5>
+                            <p class="card-text">Manage cities and locations</p>
+                            <a href="/web/cities" class="btn btn-success">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-geo-alt text-warning"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Airports</h5>
+                            <p class="card-text">
+                                Manage airports and terminals
+                            </p>
+                            <a href="/web/airports" class="btn btn-warning">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-calendar-event text-danger"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Flights</h5>
+                            <p class="card-text">Manage flight schedules</p>
+                            <a href="/web/flights" class="btn btn-danger">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-airplane text-info"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Aircraft</h5>
+                            <p class="card-text">Manage aircraft fleet</p>
+                            <a href="/web/aircraft" class="btn btn-info">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-clipboard-check text-warning"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">
+                                Aircraft Assignments
+                            </h5>
+                            <p class="card-text">Assign aircraft to flights</p>
+                            <a
+                                href="/web/aircraft-assignments"
+                                class="btn btn-warning"
+                            >
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-people text-secondary"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Employees</h5>
+                            <p class="card-text">Manage staff and crew</p>
+                            <a href="/web/employees" class="btn btn-secondary">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-person-check-fill text-info"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">
+                                Employee Assignments
+                            </h5>
+                            <p class="card-text">Assign crew to flights</p>
+                            <a
+                                href="/web/employee-assignments"
+                                class="btn btn-info"
+                            >
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-diagram-3 text-dark"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Departments</h5>
+                            <p class="card-text">
+                                Manage organizational departments
+                            </p>
+                            <a href="/web/departments" class="btn btn-dark">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i
+                                class="bi bi-briefcase text-purple"
+                                style="font-size: 3rem"
+                            ></i>
+                            <h5 class="card-title mt-2">Jobs</h5>
+                            <p class="card-text">
+                                Manage job positions and roles
+                            </p>
+                            <a href="/web/jobs" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-right me-2"></i>Manage
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Overview -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-bar-chart me-2"></i>System
+                                Overview
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-2">
+                                    <div class="p-3">
+                                        <h3
+                                            class="text-primary mb-1"
+                                            th:text="${countriesCount ?: '0'}"
+                                        >
+                                            0
+                                        </h3>
+                                        <small class="text-muted"
+                                            >Countries</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="p-3">
+                                        <h3
+                                            class="text-success mb-1"
+                                            th:text="${citiesCount ?: '0'}"
+                                        >
+                                            0
+                                        </h3>
+                                        <small class="text-muted">Cities</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="p-3">
+                                        <h3
+                                            class="text-warning mb-1"
+                                            th:text="${airportsCount ?: '0'}"
+                                        >
+                                            0
+                                        </h3>
+                                        <small class="text-muted"
+                                            >Airports</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="p-3">
+                                        <h3
+                                            class="text-info mb-1"
+                                            th:text="${aircraftCount ?: '0'}"
+                                        >
+                                            0
+                                        </h3>
+                                        <small class="text-muted"
+                                            >Aircraft</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="p-3">
+                                        <h3
+                                            class="text-danger mb-1"
+                                            th:text="${flightsCount ?: '0'}"
+                                        >
+                                            0
+                                        </h3>
+                                        <small class="text-muted"
+                                            >Flights</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="p-3">
+                                        <h3
+                                            class="text-warning mb-1"
+                                            th:text="${aircraftAssignmentsCount ?: '0'}"
+                                        >
+                                            0
+                                        </h3>
+                                        <small class="text-muted"
+                                            >Assignments</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="p-3">
+                                        <h3
+                                            class="text-secondary mb-1"
+                                            th:text="${employeesCount ?: '0'}"
+                                        >
+                                            0
+                                        </h3>
+                                        <small class="text-muted"
+                                            >Employees</small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-clock-history me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group list-group-flush">
+                                <a
+                                    href="/web/countries/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-primary"
+                                    ></i
+                                    >Add New Country
+                                </a>
+                                <a
+                                    href="/web/cities/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-success"
+                                    ></i
+                                    >Add New City
+                                </a>
+                                <a
+                                    href="/web/airports/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-warning"
+                                    ></i
+                                    >Add New Airport
+                                </a>
+                                <a
+                                    href="/web/flights/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-danger"
+                                    ></i
+                                    >Add New Flight
+                                </a>
+                                <a
+                                    href="/web/aircraft/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-info"
+                                    ></i
+                                    >Add New Aircraft
+                                </a>
+                                <a
+                                    href="/web/aircraft-assignments/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-warning"
+                                    ></i
+                                    >Add New Aircraft Assignment
+                                </a>
+                                <a
+                                    href="/web/employees/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-secondary"
+                                    ></i
+                                    >Add New Employee
+                                </a>
+                                <a
+                                    href="/web/employee-assignments/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-info"
+                                    ></i
+                                    >Add New Employee Assignment
+                                </a>
+                                <a
+                                    href="/web/departments/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-dark"
+                                    ></i
+                                    >Add New Department
+                                </a>
+                                <a
+                                    href="/web/jobs/new"
+                                    class="list-group-item list-group-item-action"
+                                >
+                                    <i
+                                        class="bi bi-plus-circle me-2 text-purple"
+                                    ></i
+                                    >Add New Job
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>System
+                                Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Welcome to the SkyBase Airline Management
+                                System. This dashboard provides an overview of
+                                your airline operations.
+                            </p>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <i
+                                        class="bi bi-check-circle text-success me-2"
+                                    ></i
+                                    >System Status: Online
+                                </li>
+                                <li>
+                                    <i
+                                        class="bi bi-shield-check text-primary me-2"
+                                    ></i
+                                    >Security: Active
+                                </li>
+                                <li>
+                                    <i class="bi bi-database text-info me-2"></i
+                                    >Database: Connected
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

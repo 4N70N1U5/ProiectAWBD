@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'employee-assignments')}"
+>
+    <head>
+        <title>Employee Assignment Details - SkyBase</title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a
+                            href="/web/employee-assignments"
+                            class="text-decoration-none"
+                            >Employee Assignments</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Assignment Details
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-person-check-fill me-2"></i>Employee
+                        Assignment Details
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Assignment information and details
+                    </p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a
+                        th:href="@{/web/employee-assignments/{employeeId}/{flightId}/{date}/edit(employeeId=${employeeAssignment.id.employeeId}, flightId=${employeeAssignment.id.flightId}, date=${employeeAssignment.id.date})}"
+                        class="btn btn-warning"
+                    >
+                        <i class="bi bi-pencil me-2"></i>Edit Assignment
+                    </a>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i class="bi bi-trash me-2"></i>Delete Assignment
+                    </button>
+                    <a
+                        href="/web/employee-assignments"
+                        class="btn btn-outline-secondary"
+                    >
+                        <i class="bi bi-arrow-left me-2"></i>Back to Assignments
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Assignment Overview -->
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Assignment
+                                Overview
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Date -->
+                                <div class="col-md-12 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i
+                                            class="bi bi-calendar-event text-primary me-3"
+                                            style="font-size: 2rem"
+                                        ></i>
+                                        <div>
+                                            <label
+                                                class="form-label text-muted small"
+                                                >Assignment Date</label
+                                            >
+                                            <h4
+                                                class="mb-0 text-primary"
+                                                th:text="${employeeAssignment.id.date}"
+                                            ></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employee Information -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-person me-2"></i>Employee
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div
+                                            class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                                            style="
+                                                width: 50px;
+                                                height: 50px;
+                                                font-size: 1.2rem;
+                                            "
+                                        >
+                                            <span
+                                                th:text="${employeeAssignment.employee.firstName.substring(0,1) + employeeAssignment.employee.lastName.substring(0,1)}"
+                                            ></span>
+                                        </div>
+                                        <div>
+                                            <h5
+                                                class="mb-1"
+                                                th:text="${employeeAssignment.employee.firstName + ' ' + employeeAssignment.employee.lastName}"
+                                            ></h5>
+                                            <p
+                                                class="text-muted mb-0"
+                                                th:text="${employeeAssignment.employee.email}"
+                                            ></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label
+                                                class="form-label text-muted small"
+                                                >Phone</label
+                                            >
+                                            <div
+                                                class="fw-bold"
+                                                th:text="${employeeAssignment.employee.phoneNumber}"
+                                            ></div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label
+                                                class="form-label text-muted small"
+                                                >Employee ID</label
+                                            >
+                                            <div>
+                                                <span
+                                                    class="badge bg-secondary fs-6"
+                                                    th:text="${employeeAssignment.employee.id}"
+                                                ></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small"
+                                        >Job Title</label
+                                    >
+                                    <div>
+                                        <span
+                                            class="badge bg-info fs-6"
+                                            th:text="${employeeAssignment.employee.job.title}"
+                                        ></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small"
+                                        >Department</label
+                                    >
+                                    <div>
+                                        <span
+                                            class="badge bg-secondary fs-6"
+                                            th:text="${employeeAssignment.employee.job.department.name}"
+                                        ></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flight Information -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-airplane me-2"></i>Flight
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i
+                                            class="bi bi-airplane-engines text-primary me-3"
+                                            style="font-size: 2rem"
+                                        ></i>
+                                        <div>
+                                            <h5
+                                                class="mb-1"
+                                                th:text="${employeeAssignment.flight.number}"
+                                            ></h5>
+                                            <p class="text-muted mb-0">
+                                                Flight Number
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small"
+                                        >Departure</label
+                                    >
+                                    <div
+                                        class="fw-bold"
+                                        th:text="${employeeAssignment.flight.departureAirport.name}"
+                                    ></div>
+                                    <small
+                                        class="text-muted"
+                                        th:text="${employeeAssignment.flight.departureAirport.city.name + ', ' + employeeAssignment.flight.departureAirport.city.country.name}"
+                                    ></small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small"
+                                        >Arrival</label
+                                    >
+                                    <div
+                                        class="fw-bold"
+                                        th:text="${employeeAssignment.flight.arrivalAirport.name}"
+                                    ></div>
+                                    <small
+                                        class="text-muted"
+                                        th:text="${employeeAssignment.flight.arrivalAirport.city.name + ', ' + employeeAssignment.flight.arrivalAirport.city.country.name}"
+                                    ></small>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small"
+                                        >Departure Time</label
+                                    >
+                                    <div
+                                        class="fw-bold"
+                                        th:text="${employeeAssignment.flight.departureTime}"
+                                    ></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small"
+                                        >Arrival Time</label
+                                    >
+                                    <div
+                                        class="fw-bold"
+                                        th:text="${employeeAssignment.flight.arrivalTime}"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Panel -->
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/employee-assignments/{employeeId}/{flightId}/{date}/edit(employeeId=${employeeAssignment.id.employeeId}, flightId=${employeeAssignment.id.flightId}, date=${employeeAssignment.id.date})}"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    <i class="bi bi-pencil me-2"></i>Edit
+                                    Assignment
+                                </a>
+
+                                <a
+                                    href="/web/employee-assignments/new"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>New
+                                    Assignment
+                                </a>
+
+                                <a
+                                    href="/web/employee-assignments"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All
+                                    Assignments
+                                </a>
+
+                                <hr />
+
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                >
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Assignment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Links -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-link me-2"></i>Related
+                                Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/employees/{id}(id=${employeeAssignment.employee.id})}"
+                                    class="btn btn-outline-info btn-sm"
+                                >
+                                    <i class="bi bi-person me-2"></i>View
+                                    Employee
+                                </a>
+
+                                <a
+                                    th:href="@{/web/flights/{id}(id=${employeeAssignment.flight.id})}"
+                                    class="btn btn-outline-primary btn-sm"
+                                >
+                                    <i class="bi bi-airplane me-2"></i>View
+                                    Flight
+                                </a>
+
+                                <a
+                                    th:href="@{/web/jobs/{id}(id=${employeeAssignment.employee.job.id})}"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-briefcase me-2"></i>View Job
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assignment Info -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Assignment
+                                Info
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <strong>Assignment ID</strong><br />
+                                <small class="text-muted">
+                                    E<span
+                                        th:text="${employeeAssignment.id.employeeId}"
+                                    ></span>
+                                    - F<span
+                                        th:text="${employeeAssignment.id.flightId}"
+                                    ></span>
+                                    -
+                                    <span
+                                        th:text="${employeeAssignment.id.date}"
+                                    ></span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div
+                class="modal fade"
+                id="deleteModal"
+                tabindex="-1"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i
+                                    class="bi bi-exclamation-triangle text-warning me-2"
+                                ></i
+                                >Confirm Deletion
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete this employee
+                                assignment?
+                            </p>
+                            <div class="alert alert-warning">
+                                <strong>Employee:</strong>
+                                <span
+                                    th:text="${employeeAssignment.employee.firstName + ' ' + employeeAssignment.employee.lastName}"
+                                ></span
+                                ><br />
+                                <strong>Flight:</strong>
+                                <span
+                                    th:text="${employeeAssignment.flight.number}"
+                                ></span
+                                ><br />
+                                <strong>Date:</strong>
+                                <span
+                                    th:text="${employeeAssignment.id.date}"
+                                ></span>
+                            </div>
+                            <p class="text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                This action cannot be undone.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/employee-assignments/{employeeId}/{flightId}/{date}/delete(employeeId=${employeeAssignment.id.employeeId}, flightId=${employeeAssignment.id.flightId}, date=${employeeAssignment.id.date})}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Assignment
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

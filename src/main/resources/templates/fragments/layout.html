@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:fragment="layout (title, content, activePage)"
+>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title th:text="${title} ?: 'SkyBase - Airline Management'">
+            SkyBase
+        </title>
+
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <!-- Bootstrap Icons -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+            rel="stylesheet"
+        />
+
+        <style>
+            .navbar-brand {
+                font-weight: bold;
+            }
+            .sidebar {
+                min-height: calc(100vh - 56px);
+                background-color: #f8f9fa;
+            }
+            .main-content {
+                padding: 2rem;
+            }
+            .card {
+                border: none;
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            }
+            .btn-primary {
+                background-color: #0066cc;
+                border-color: #0066cc;
+            }
+            .btn-primary:hover {
+                background-color: #0052a3;
+                border-color: #0052a3;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/web">
+                    <i class="bi bi-airplane"></i> SkyBase
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'dashboard'} ? 'active' : ''"
+                                href="/web"
+                                >Dashboard</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'countries'} ? 'active' : ''"
+                                href="/web/countries"
+                                >Countries</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'cities'} ? 'active' : ''"
+                                href="/web/cities"
+                                >Cities</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'airports'} ? 'active' : ''"
+                                href="/web/airports"
+                                >Airports</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'flights'} ? 'active' : ''"
+                                href="/web/flights"
+                                >Flights</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'aircraft'} ? 'active' : ''"
+                                href="/web/aircraft"
+                                >Aircraft</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'aircraft-assignments'} ? 'active' : ''"
+                                href="/web/aircraft-assignments"
+                                >Aircraft Assignments</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'employees'} ? 'active' : ''"
+                                href="/web/employees"
+                                >Employees</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'employee-assignments'} ? 'active' : ''"
+                                href="/web/employee-assignments"
+                                >Employee Assignments</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'departments'} ? 'active' : ''"
+                                href="/web/departments"
+                                >Departments</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'jobs'} ? 'active' : ''"
+                                href="/web/jobs"
+                                >Jobs</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-2 sidebar p-3">
+                    <h6 class="text-muted">Management</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'dashboard'} ? 'active' : ''"
+                                href="/web"
+                            >
+                                <i class="bi bi-house-door"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'countries'} ? 'active' : ''"
+                                href="/web/countries"
+                            >
+                                <i class="bi bi-globe"></i> Countries
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'cities'} ? 'active' : ''"
+                                href="/web/cities"
+                            >
+                                <i class="bi bi-buildings"></i> Cities
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'airports'} ? 'active' : ''"
+                                href="/web/airports"
+                            >
+                                <i class="bi bi-geo-alt"></i> Airports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'aircraft'} ? 'active' : ''"
+                                href="/web/aircraft"
+                            >
+                                <i class="bi bi-airplane"></i> Aircraft
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'flights'} ? 'active' : ''"
+                                href="/web/flights"
+                            >
+                                <i class="bi bi-calendar-event"></i> Flights
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'aircraft-assignments'} ? 'active' : ''"
+                                href="/web/aircraft-assignments"
+                            >
+                                <i class="bi bi-clipboard-check"></i> Aircraft
+                                Assignments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'employees'} ? 'active' : ''"
+                                href="/web/employees"
+                            >
+                                <i class="bi bi-people"></i> Employees
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'employee-assignments'} ? 'active' : ''"
+                                href="/web/employee-assignments"
+                            >
+                                <i class="bi bi-person-check-fill"></i> Employee
+                                Assignments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'departments'} ? 'active' : ''"
+                                href="/web/departments"
+                            >
+                                <i class="bi bi-diagram-3"></i> Departments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                th:classappend="${activePage == 'jobs'} ? 'active' : ''"
+                                href="/web/jobs"
+                            >
+                                <i class="bi bi-briefcase"></i> Jobs
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-10 main-content">
+                    <!-- Flash Messages -->
+                    <div
+                        th:if="${successMessage}"
+                        class="alert alert-success alert-dismissible fade show"
+                        role="alert"
+                    >
+                        <i class="bi bi-check-circle"></i>
+                        <span th:text="${successMessage}"></span>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                        ></button>
+                    </div>
+
+                    <div
+                        th:if="${errorMessage}"
+                        class="alert alert-danger alert-dismissible fade show"
+                        role="alert"
+                    >
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span th:text="${errorMessage}"></span>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                        ></button>
+                    </div>
+
+                    <!-- Page Content -->
+                    <div th:replace="${content}">
+                        <!-- Content will be replaced by individual pages -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

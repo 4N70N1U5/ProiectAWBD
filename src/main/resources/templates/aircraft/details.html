@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'aircraft')}"
+>
+    <head>
+        <title th:text="'Aircraft: ' + ${aircraft.registration} + ' - SkyBase'">
+            Aircraft Details - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/aircraft" class="text-decoration-none"
+                            >Aircraft</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        th:text="${aircraft.registration}"
+                    >
+                        Aircraft Details
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-airplane me-2"></i
+                        ><span th:text="${aircraft.registration}"
+                            >Aircraft Registration</span
+                        >
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Aircraft details and specifications
+                    </p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a
+                        th:href="@{/web/aircraft/{id}/edit(id=${aircraft.id})}"
+                        class="btn btn-warning"
+                    >
+                        <i class="bi bi-pencil me-2"></i>Edit Aircraft
+                    </a>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i class="bi bi-trash me-2"></i>Delete Aircraft
+                    </button>
+                    <a href="/web/aircraft" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Aircraft
+                    </a>
+                </div>
+            </div>
+
+            <!-- Aircraft Details -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Aircraft
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Aircraft ID</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${aircraft.id}"
+                                        >
+                                            #1
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Registration</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${aircraft.registration}"
+                                        >
+                                            N123AB
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Aircraft Type</label
+                                        >
+                                        <div>
+                                            <span
+                                                class="badge bg-primary fs-6"
+                                                th:text="${aircraft.type}"
+                                                >Boeing 737-800</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Range</label
+                                        >
+                                        <div>
+                                            <span
+                                                th:if="${aircraft.range != null}"
+                                                class="fw-bold text-info"
+                                            >
+                                                <i
+                                                    class="bi bi-geo-alt me-1"
+                                                ></i>
+                                                <span
+                                                    th:text="${#numbers.formatDecimal(aircraft.range, 1, 0)} + ' km'"
+                                                    >5,000 km</span
+                                                >
+                                            </span>
+                                            <span
+                                                th:if="${aircraft.range == null}"
+                                                class="text-muted"
+                                                >Not specified</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Passenger Capacity</label
+                                        >
+                                        <div>
+                                            <span
+                                                th:if="${aircraft.capacity != null}"
+                                                class="fw-bold text-success"
+                                            >
+                                                <i
+                                                    class="bi bi-people me-1"
+                                                ></i>
+                                                <span
+                                                    th:text="${aircraft.capacity} + ' passengers'"
+                                                    >180 passengers</span
+                                                >
+                                            </span>
+                                            <span
+                                                th:if="${aircraft.capacity == null}"
+                                                class="text-muted"
+                                                >Not specified</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specifications Card -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-gear me-2"></i>Specifications
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="text-center p-3">
+                                        <i
+                                            class="bi bi-airplane text-primary"
+                                            style="font-size: 2rem"
+                                        ></i>
+                                        <h6 class="mt-2 mb-1">Aircraft Type</h6>
+                                        <p
+                                            class="text-muted mb-0"
+                                            th:text="${aircraft.type}"
+                                        >
+                                            Boeing 737-800
+                                        </p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="col-md-4"
+                                    th:if="${aircraft.range != null}"
+                                >
+                                    <div class="text-center p-3">
+                                        <i
+                                            class="bi bi-geo-alt text-info"
+                                            style="font-size: 2rem"
+                                        ></i>
+                                        <h6 class="mt-2 mb-1">Maximum Range</h6>
+                                        <p
+                                            class="text-muted mb-0"
+                                            th:text="${#numbers.formatDecimal(aircraft.range, 1, 0)} + ' km'"
+                                        >
+                                            5,000 km
+                                        </p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="col-md-4"
+                                    th:if="${aircraft.capacity != null}"
+                                >
+                                    <div class="text-center p-3">
+                                        <i
+                                            class="bi bi-people text-success"
+                                            style="font-size: 2rem"
+                                        ></i>
+                                        <h6 class="mt-2 mb-1">
+                                            Passenger Capacity
+                                        </h6>
+                                        <p
+                                            class="text-muted mb-0"
+                                            th:text="${aircraft.capacity} + ' passengers'"
+                                        >
+                                            180 passengers
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/aircraft/{id}/edit(id=${aircraft.id})}"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    <i class="bi bi-pencil me-2"></i>Edit
+                                    Aircraft
+                                </a>
+                                <a
+                                    href="/web/aircraft/new"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>Add
+                                    New Aircraft
+                                </a>
+                                <a
+                                    href="/web/aircraft"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All
+                                    Aircraft
+                                </a>
+                                <hr />
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                >
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Aircraft
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aircraft Status -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Aircraft
+                                Status
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <i
+                                    class="bi bi-airplane text-primary"
+                                    style="font-size: 2rem"
+                                ></i>
+                                <h6
+                                    class="mt-2 mb-1"
+                                    th:text="${aircraft.registration}"
+                                >
+                                    Aircraft Registration
+                                </h6>
+                                <p
+                                    class="text-muted small mb-2"
+                                    th:text="${aircraft.type}"
+                                >
+                                    Aircraft Type
+                                </p>
+                                <span class="badge bg-success">Active</span>
+                            </div>
+                            <hr />
+                            <div class="small">
+                                <div
+                                    class="d-flex justify-content-between mb-1"
+                                >
+                                    <span>Status:</span>
+                                    <span class="text-success"
+                                        >Operational</span
+                                    >
+                                </div>
+                                <div
+                                    class="d-flex justify-content-between mb-1"
+                                >
+                                    <span>Registration:</span>
+                                    <span th:text="${aircraft.registration}"
+                                        >N123AB</span
+                                    >
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Type:</span>
+                                    <span th:text="${aircraft.type}"
+                                        >Boeing 737</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i
+                                    class="bi bi-exclamation-triangle text-warning me-2"
+                                ></i
+                                >Confirm Deletion
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete the aircraft
+                                "<strong th:text="${aircraft.registration}"
+                                    >Aircraft Registration</strong
+                                >"?
+                            </p>
+                            <p class="text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                This action cannot be undone and may affect
+                                related flight assignments.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/aircraft/{id}/delete(id=${aircraft.id})}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Aircraft
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

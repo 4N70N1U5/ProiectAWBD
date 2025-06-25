@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'employees')}"
+>
+    <head>
+        <title
+            th:text="'Employee: ' + ${employee.firstName + ' ' + employee.lastName} + ' - SkyBase'"
+        >
+            Employee Details - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/employees" class="text-decoration-none"
+                            >Employees</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        th:text="${employee.firstName + ' ' + employee.lastName}"
+                    >
+                        Employee Details
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-person me-2"></i
+                        ><span
+                            th:text="${employee.firstName + ' ' + employee.lastName}"
+                            >Employee Name</span
+                        >
+                    </h1>
+                    <p class="text-muted mb-0">
+                        Employee details and information
+                    </p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a
+                        th:href="@{/web/employees/{id}/edit(id=${employee.id})}"
+                        class="btn btn-warning"
+                    >
+                        <i class="bi bi-pencil me-2"></i>Edit Employee
+                    </a>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i class="bi bi-trash me-2"></i>Delete Employee
+                    </button>
+                    <a href="/web/employees" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Employees
+                    </a>
+                </div>
+            </div>
+
+            <!-- Employee Details -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Personal
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Employee ID</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${employee.id}"
+                                        >
+                                            #1
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Full Name</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${employee.firstName + ' ' + employee.lastName}"
+                                        >
+                                            John Doe
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Email</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${employee.email}"
+                                        >
+                                            john.doe@example.com
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Phone Number</label
+                                        >
+                                        <div
+                                            class="fw-bold"
+                                            th:text="${employee.phoneNumber}"
+                                        >
+                                            +1234567890
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Information -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-briefcase me-2"></i>Job
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Job Title</label
+                                        >
+                                        <div>
+                                            <span
+                                                class="badge bg-primary fs-6"
+                                                th:text="${employee.job.title}"
+                                                >Software Engineer</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Department</label
+                                        >
+                                        <div>
+                                            <span
+                                                class="badge bg-secondary fs-6"
+                                                th:text="${employee.job.department.name}"
+                                                >IT Department</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Salary</label
+                                        >
+                                        <div class="fw-bold text-success">
+                                            <i
+                                                class="bi bi-currency-dollar me-1"
+                                            ></i>
+                                            <span
+                                                th:text="${#numbers.formatDecimal(employee.salary, 1, 0)}"
+                                                >50,000</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Manager</label
+                                        >
+                                        <div>
+                                            <span
+                                                th:if="${employee.manager != null}"
+                                                th:text="${employee.manager.firstName + ' ' + employee.manager.lastName}"
+                                                class="fw-bold"
+                                                >Manager Name</span
+                                            >
+                                            <span
+                                                th:if="${employee.manager == null}"
+                                                class="text-muted"
+                                                >No Manager Assigned</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="col-md-6"
+                                    th:if="${employee.flightHours != null}"
+                                >
+                                    <div class="mb-3">
+                                        <label
+                                            class="form-label text-muted small"
+                                            >Flight Hours</label
+                                        >
+                                        <div class="fw-bold text-info">
+                                            <i class="bi bi-clock me-1"></i>
+                                            <span
+                                                th:text="${employee.flightHours} + ' hours'"
+                                                >0 hours</span
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/employees/{id}/edit(id=${employee.id})}"
+                                    class="btn btn-warning btn-sm"
+                                >
+                                    <i class="bi bi-pencil me-2"></i>Edit
+                                    Employee
+                                </a>
+                                <a
+                                    href="/web/employees/new"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>Add
+                                    New Employee
+                                </a>
+                                <a
+                                    href="/web/employees"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All
+                                    Employees
+                                </a>
+                                <hr />
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                >
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Employee
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Job Details -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-briefcase me-2"></i>Job Details
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <i
+                                    class="bi bi-briefcase text-primary"
+                                    style="font-size: 2rem"
+                                ></i>
+                                <h6
+                                    class="mt-2 mb-1"
+                                    th:text="${employee.job.title}"
+                                >
+                                    Job Title
+                                </h6>
+                                <p class="text-muted small mb-2">
+                                    Department:
+                                    <span
+                                        th:text="${employee.job.department.name}"
+                                        >Department</span
+                                    >
+                                </p>
+                                <p class="text-muted small mb-2">
+                                    Salary Range:
+                                    <span
+                                        th:text="'$' + ${#numbers.formatDecimal(employee.job.minSalary, 1, 0)} + ' - $' + ${#numbers.formatDecimal(employee.job.maxSalary, 1, 0)}"
+                                        >$50,000 - $80,000</span
+                                    >
+                                </p>
+                                <a
+                                    th:href="@{/web/jobs/{id}(id=${employee.job.id})}"
+                                    class="btn btn-outline-primary btn-sm"
+                                >
+                                    <i class="bi bi-eye me-1"></i>View Job
+                                    Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manager Info -->
+                    <div class="card mt-4" th:if="${employee.manager != null}">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-person-badge me-2"></i>Manager
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center">
+                                <i
+                                    class="bi bi-person-badge text-secondary"
+                                    style="font-size: 2rem"
+                                ></i>
+                                <h6
+                                    class="mt-2 mb-1"
+                                    th:text="${employee.manager.firstName + ' ' + employee.manager.lastName}"
+                                >
+                                    Manager Name
+                                </h6>
+                                <p
+                                    class="text-muted small mb-2"
+                                    th:text="${employee.manager.job.title}"
+                                >
+                                    Manager Job Title
+                                </p>
+                                <p
+                                    class="text-muted small mb-2"
+                                    th:text="${employee.manager.email}"
+                                >
+                                    manager@example.com
+                                </p>
+                                <a
+                                    th:href="@{/web/employees/{id}(id=${employee.manager.id})}"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-eye me-1"></i>View Manager
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i
+                                    class="bi bi-exclamation-triangle text-warning me-2"
+                                ></i
+                                >Confirm Deletion
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete the employee
+                                "<strong
+                                    th:text="${employee.firstName + ' ' + employee.lastName}"
+                                    >Employee Name</strong
+                                >"?
+                            </p>
+                            <p class="text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                This action cannot be undone and may affect
+                                related assignments and reports.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/employees/{id}/delete(id=${employee.id})}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                    Employee
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

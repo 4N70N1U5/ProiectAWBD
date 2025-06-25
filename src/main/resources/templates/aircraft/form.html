@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'aircraft')}"
+>
+    <head>
+        <title
+            th:text="${aircraft.id != null ? 'Edit Aircraft - SkyBase' : 'New Aircraft - SkyBase'}"
+        >
+            Aircraft Form - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/aircraft" class="text-decoration-none"
+                            >Aircraft</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        th:text="${aircraft.id != null ? 'Edit Aircraft' : 'New Aircraft'}"
+                    >
+                        Aircraft Form
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-airplane me-2"></i>
+                        <span
+                            th:text="${aircraft.id != null ? 'Edit Aircraft' : 'New Aircraft'}"
+                            >Aircraft Form</span
+                        >
+                    </h1>
+                    <p
+                        class="text-muted mb-0"
+                        th:text="${aircraft.id != null ? 'Update aircraft information' : 'Add a new aircraft to the fleet'}"
+                    >
+                        Aircraft form description
+                    </p>
+                </div>
+                <a href="/web/aircraft" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Aircraft
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            <div
+                th:if="${successMessage}"
+                class="alert alert-success alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-check-circle"></i>
+                <span th:text="${successMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+
+            <div
+                th:if="${errorMessage}"
+                class="alert alert-danger alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${errorMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+
+            <!-- Aircraft Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-airplane me-2"></i>Aircraft
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form
+                                th:action="${aircraft.id != null ? '/web/aircraft/' + aircraft.id : '/web/aircraft'}"
+                                th:object="${aircraft}"
+                                method="post"
+                            >
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label
+                                                for="registration"
+                                                class="form-label"
+                                            >
+                                                <i class="bi bi-tag me-1"></i
+                                                >Registration
+                                                <span class="text-danger"
+                                                    >*</span
+                                                >
+                                            </label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('registration')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="registration"
+                                                th:field="*{registration}"
+                                                placeholder="e.g., N123AB"
+                                            />
+                                            <div
+                                                class="invalid-feedback"
+                                                th:if="${#fields.hasErrors('registration')}"
+                                                th:errors="*{registration}"
+                                            >
+                                                Registration error
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label
+                                                for="type"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-airplane me-1"
+                                                ></i
+                                                >Aircraft Type
+                                                <span class="text-danger"
+                                                    >*</span
+                                                >
+                                            </label>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('type')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="type"
+                                                th:field="*{type}"
+                                                placeholder="e.g., Boeing 737-800"
+                                            />
+                                            <div
+                                                class="invalid-feedback"
+                                                th:if="${#fields.hasErrors('type')}"
+                                                th:errors="*{type}"
+                                            >
+                                                Type error
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label
+                                                for="range"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-geo-alt me-1"
+                                                ></i
+                                                >Range (km)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('range')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="range"
+                                                th:field="*{range}"
+                                                placeholder="e.g., 5000"
+                                                min="1"
+                                            />
+                                            <div
+                                                class="invalid-feedback"
+                                                th:if="${#fields.hasErrors('range')}"
+                                                th:errors="*{range}"
+                                            >
+                                                Range error
+                                            </div>
+                                            <div class="form-text">
+                                                Maximum flight range in
+                                                kilometers
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label
+                                                for="capacity"
+                                                class="form-label"
+                                            >
+                                                <i class="bi bi-people me-1"></i
+                                                >Passenger Capacity
+                                            </label>
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('capacity')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="capacity"
+                                                th:field="*{capacity}"
+                                                placeholder="e.g., 180"
+                                                min="1"
+                                            />
+                                            <div
+                                                class="invalid-feedback"
+                                                th:if="${#fields.hasErrors('capacity')}"
+                                                th:errors="*{capacity}"
+                                            >
+                                                Capacity error
+                                            </div>
+                                            <div class="form-text">
+                                                Maximum number of passengers
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr />
+
+                                <div class="d-flex justify-content-between">
+                                    <a
+                                        href="/web/aircraft"
+                                        class="btn btn-secondary"
+                                    >
+                                        <i class="bi bi-x-circle me-2"></i
+                                        >Cancel
+                                    </a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        <span
+                                            th:text="${aircraft.id != null ? 'Update Aircraft' : 'Create Aircraft'}"
+                                            >Save</span
+                                        >
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Help Card -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Aircraft
+                                Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="small">
+                                <div class="mb-3">
+                                    <strong
+                                        ><i class="bi bi-tag me-1"></i
+                                        >Registration:</strong
+                                    >
+                                    <p class="text-muted mb-0">
+                                        Unique aircraft identifier (tail
+                                        number). Must be unique across the
+                                        fleet.
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <strong
+                                        ><i class="bi bi-airplane me-1"></i
+                                        >Type:</strong
+                                    >
+                                    <p class="text-muted mb-0">
+                                        Aircraft model and variant (e.g., Boeing
+                                        737-800, Airbus A320).
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <strong
+                                        ><i class="bi bi-geo-alt me-1"></i
+                                        >Range:</strong
+                                    >
+                                    <p class="text-muted mb-0">
+                                        Maximum flight distance in kilometers
+                                        without refueling.
+                                    </p>
+                                </div>
+                                <div class="mb-0">
+                                    <strong
+                                        ><i class="bi bi-people me-1"></i
+                                        >Capacity:</strong
+                                    >
+                                    <p class="text-muted mb-0">
+                                        Maximum number of passengers the
+                                        aircraft can carry.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    href="/web/aircraft"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All
+                                    Aircraft
+                                </a>
+                                <a
+                                    href="/web/aircraft/new"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>Add
+                                    Another Aircraft
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

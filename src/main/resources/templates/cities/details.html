@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'cities')}"
+>
+    <head>
+        <title>City Details - SkyBase</title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/web/cities" class="text-decoration-none"
+                            >Cities</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item active" th:text="${city.name}">
+                        City Details
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-buildings me-2"></i>
+                        <span th:text="${city.name}">City Name</span>
+                    </h1>
+                    <p class="text-muted mb-0">City details and information</p>
+                </div>
+                <div class="btn-group" role="group">
+                    <a
+                        th:href="@{/web/cities/{id}/edit(id=${city.id})}"
+                        class="btn btn-outline-primary"
+                    >
+                        <i class="bi bi-pencil me-2"></i>Edit
+                    </a>
+                    <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                    >
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </button>
+                    <a href="/web/cities" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Cities
+                    </a>
+                </div>
+            </div>
+
+            <!-- City Details -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>City
+                                Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="detail-label">ID</div>
+                                    <div class="detail-value">
+                                        <span
+                                            class="badge bg-light text-dark fs-6"
+                                            th:text="${city.id}"
+                                            >1</span
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="detail-label">City Name</div>
+                                    <div
+                                        class="detail-value"
+                                        th:text="${city.name}"
+                                    >
+                                        City Name
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="detail-label">Country</div>
+                                    <div class="detail-value">
+                                        <span
+                                            class="badge bg-info text-white fs-6"
+                                            th:text="${city.country.name}"
+                                            >Country Name</span
+                                        >
+                                        <small
+                                            class="text-muted ms-2"
+                                            th:text="'(' + ${city.country.code} + ')'"
+                                            >Code</small
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="detail-label">Country Code</div>
+                                    <div class="detail-value">
+                                        <code th:text="${city.country.code}"
+                                            >CC</code
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    th:href="@{/web/cities/{id}/edit(id=${city.id})}"
+                                    class="btn btn-outline-primary btn-sm"
+                                >
+                                    <i class="bi bi-pencil me-2"></i>Edit City
+                                </a>
+                                <a
+                                    th:href="@{/web/countries/{id}(id=${city.country.id})}"
+                                    class="btn btn-outline-info btn-sm"
+                                >
+                                    <i class="bi bi-globe me-2"></i>View Country
+                                </a>
+                                <hr class="my-2" />
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal"
+                                >
+                                    <i class="bi bi-trash me-2"></i>Delete City
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Information -->
+                    <div class="card mt-3">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-link me-2"></i>Related
+                                Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <small class="text-muted">
+                                This city belongs to
+                                <strong th:text="${city.country.name}"
+                                    >Country</strong
+                                >. You can view all cities in this country or
+                                manage country information.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i
+                                    class="bi bi-exclamation-triangle text-warning me-2"
+                                ></i>
+                                Confirm Deletion
+                            </h5>
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Are you sure you want to delete the city
+                                <strong th:text="${city.name}">City Name</strong
+                                >?
+                            </p>
+                            <p class="text-muted small">
+                                This action cannot be undone and may affect
+                                related data.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancel
+                            </button>
+                            <form
+                                th:action="@{/web/cities/{id}/delete(id=${city.id})}"
+                                method="post"
+                                class="d-inline"
+                            >
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .detail-label {
+                    font-weight: 600;
+                    color: #6c757d;
+                }
+                .detail-value {
+                    color: #212529;
+                    font-weight: 500;
+                }
+            </style>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::title}, ~{::content}, 'aircraft-assignments')}"
+>
+    <head>
+        <title
+            th:text="${originalId != null ? 'Edit Aircraft Assignment - SkyBase' : 'New Aircraft Assignment - SkyBase'}"
+        >
+            Aircraft Assignment Form - SkyBase
+        </title>
+    </head>
+    <body>
+        <div th:fragment="content">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/web" class="text-decoration-none"
+                            >Dashboard</a
+                        >
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a
+                            href="/web/aircraft-assignments"
+                            class="text-decoration-none"
+                            >Aircraft Assignments</a
+                        >
+                    </li>
+                    <li
+                        class="breadcrumb-item active"
+                        th:text="${originalId != null ? 'Edit Assignment' : 'New Assignment'}"
+                    >
+                        Assignment Form
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">
+                        <i class="bi bi-clipboard-check me-2"></i>
+                        <span
+                            th:text="${originalId != null ? 'Edit Aircraft Assignment' : 'New Aircraft Assignment'}"
+                            >Assignment Form</span
+                        >
+                    </h1>
+                    <p
+                        class="text-muted mb-0"
+                        th:text="${originalId != null ? 'Update aircraft assignment information' : 'Assign an aircraft to a flight'}"
+                    >
+                        Assignment form description
+                    </p>
+                </div>
+                <a
+                    href="/web/aircraft-assignments"
+                    class="btn btn-outline-secondary"
+                >
+                    <i class="bi bi-arrow-left me-2"></i>Back to Assignments
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            <div
+                th:if="${successMessage}"
+                class="alert alert-success alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-check-circle"></i>
+                <span th:text="${successMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+
+            <div
+                th:if="${errorMessage}"
+                class="alert alert-danger alert-dismissible fade show"
+                role="alert"
+            >
+                <i class="bi bi-exclamation-triangle"></i>
+                <span th:text="${errorMessage}"></span>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+
+            <!-- Aircraft Assignment Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-clipboard-check me-2"></i
+                                >Assignment Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form
+                                th:action="${originalId != null ? '/web/aircraft-assignments/' + originalId.aircraftId + '/' + originalId.flightId + '/' + originalId.date : '/web/aircraft-assignments'}"
+                                th:object="${aircraftAssignmentDTO}"
+                                method="post"
+                            >
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label
+                                                for="date"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-calendar me-1"
+                                                ></i
+                                                >Assignment Date
+                                                <span class="text-danger"
+                                                    >*</span
+                                                >
+                                            </label>
+                                            <input
+                                                type="date"
+                                                class="form-control"
+                                                th:class="${#fields.hasErrors('date')} ? 'form-control is-invalid' : 'form-control'"
+                                                id="date"
+                                                th:field="*{date}"
+                                            />
+                                            <div
+                                                class="invalid-feedback"
+                                                th:if="${#fields.hasErrors('date')}"
+                                                th:errors="*{date}"
+                                            >
+                                                Date error
+                                            </div>
+                                            <div class="form-text">
+                                                Select the date for this
+                                                assignment
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label
+                                                for="aircraftId"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-airplane me-1"
+                                                ></i
+                                                >Aircraft
+                                                <span class="text-danger"
+                                                    >*</span
+                                                >
+                                            </label>
+                                            <select
+                                                class="form-select"
+                                                th:class="${#fields.hasErrors('aircraftId')} ? 'form-select is-invalid' : 'form-select'"
+                                                id="aircraftId"
+                                                th:field="*{aircraftId}"
+                                            >
+                                                <option value="">
+                                                    Select aircraft
+                                                </option>
+                                                <option
+                                                    th:each="aircraftItem : ${aircraft}"
+                                                    th:value="${aircraftItem.id}"
+                                                    th:text="${aircraftItem.registration + ' - ' + aircraftItem.type + ' (Range: ' + (aircraftItem.range != null ? aircraftItem.range + ' km' : 'N/A') + ')'}"
+                                                >
+                                                    N123AB - Boeing 737-800
+                                                    (Range: 5000 km)
+                                                </option>
+                                            </select>
+                                            <div
+                                                class="invalid-feedback"
+                                                th:if="${#fields.hasErrors('aircraftId')}"
+                                                th:errors="*{aircraftId}"
+                                            >
+                                                Aircraft error
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label
+                                                for="flightId"
+                                                class="form-label"
+                                            >
+                                                <i
+                                                    class="bi bi-calendar-event me-1"
+                                                ></i
+                                                >Flight
+                                                <span class="text-danger"
+                                                    >*</span
+                                                >
+                                            </label>
+                                            <select
+                                                class="form-select"
+                                                th:class="${#fields.hasErrors('flightId')} ? 'form-select is-invalid' : 'form-select'"
+                                                id="flightId"
+                                                th:field="*{flightId}"
+                                            >
+                                                <option value="">
+                                                    Select flight
+                                                </option>
+                                                <option
+                                                    th:each="flight : ${flights}"
+                                                    th:value="${flight.id}"
+                                                    th:text="${flight.number + ' - ' + flight.departureAirport.code + ' → ' + flight.arrivalAirport.code + ' (' + flight.distance + ' km)'}"
+                                                >
+                                                    SK123 - LAX → JFK (4000 km)
+                                                </option>
+                                            </select>
+                                            <div
+                                                class="invalid-feedback"
+                                                th:if="${#fields.hasErrors('flightId')}"
+                                                th:errors="*{flightId}"
+                                            >
+                                                Flight error
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info" role="alert">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Important:</strong> The system will
+                                    validate that:
+                                    <ul class="mb-0 mt-2">
+                                        <li>
+                                            The aircraft is available on the
+                                            selected date
+                                        </li>
+                                        <li>
+                                            The aircraft range is sufficient for
+                                            the flight distance
+                                        </li>
+                                        <li>
+                                            No conflicts exist with existing
+                                            assignments
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <hr />
+
+                                <div class="d-flex justify-content-between">
+                                    <a
+                                        href="/web/aircraft-assignments"
+                                        class="btn btn-secondary"
+                                    >
+                                        <i class="bi bi-x-circle me-2"></i
+                                        >Cancel
+                                    </a>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        <span
+                                            th:text="${originalId != null ? 'Update Assignment' : 'Create Assignment'}"
+                                            >Save</span
+                                        >
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Help Card -->
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-info-circle me-2"></i>Assignment
+                                Information
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="small">
+                                <div class="mb-3">
+                                    <strong
+                                        ><i class="bi bi-calendar me-1"></i
+                                        >Date:</strong
+                                    >
+                                    <p class="text-muted mb-0">
+                                        Select the specific date for this
+                                        aircraft assignment.
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <strong
+                                        ><i class="bi bi-airplane me-1"></i
+                                        >Aircraft:</strong
+                                    >
+                                    <p class="text-muted mb-0">
+                                        Choose an available aircraft from the
+                                        fleet. Range will be validated against
+                                        flight distance.
+                                    </p>
+                                </div>
+                                <div class="mb-0">
+                                    <strong
+                                        ><i
+                                            class="bi bi-calendar-event me-1"
+                                        ></i
+                                        >Flight:</strong
+                                    >
+                                    <p class="text-muted mb-0">
+                                        Select the flight to assign the aircraft
+                                        to. Distance must be within aircraft
+                                        range.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-lightning me-2"></i>Quick
+                                Actions
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a
+                                    href="/web/aircraft-assignments"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    <i class="bi bi-list me-2"></i>View All
+                                    Assignments
+                                </a>
+                                <a
+                                    href="/web/aircraft-assignments/new"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    <i class="bi bi-plus-circle me-2"></i>Add
+                                    Another Assignment
+                                </a>
+                                <hr />
+                                <a
+                                    href="/web/aircraft"
+                                    class="btn btn-outline-info btn-sm"
+                                >
+                                    <i class="bi bi-airplane me-2"></i>Manage
+                                    Aircraft
+                                </a>
+                                <a
+                                    href="/web/flights"
+                                    class="btn btn-outline-danger btn-sm"
+                                >
+                                    <i class="bi bi-calendar-event me-2"></i
+                                    >Manage Flights
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validation Rules -->
+                    <div class="card mt-4">
+                        <div class="card-header bg-white">
+                            <h6 class="card-title mb-0">
+                                <i class="bi bi-shield-check me-2"></i
+                                >Validation Rules
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="small">
+                                <div class="mb-2">
+                                    <i
+                                        class="bi bi-check-circle text-success me-1"
+                                    ></i>
+                                    Aircraft must be available on selected date
+                                </div>
+                                <div class="mb-2">
+                                    <i
+                                        class="bi bi-check-circle text-success me-1"
+                                    ></i>
+                                    Aircraft range ≥ Flight distance
+                                </div>
+                                <div class="mb-2">
+                                    <i
+                                        class="bi bi-check-circle text-success me-1"
+                                    ></i>
+                                    No duplicate assignments allowed
+                                </div>
+                                <div class="mb-0">
+                                    <i
+                                        class="bi bi-check-circle text-success me-1"
+                                    ></i>
+                                    All fields are required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
